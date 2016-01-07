@@ -14,7 +14,7 @@
 
       <b>Usage:</b><br/>
         Install the cppcheck plugin.
-        File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the <b>absolute<b>
+        File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the <b>absolute</b>
         path of the cppcheck executable.
     ]]></description>
 
