@@ -1,0 +1,49 @@
+<idea-plugin version="2">
+  <id>com.github.johnthagen.cppcheck</id>
+  <name>cppcheck</name>
+  <version>1.0.0</version>
+  <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
+
+  <description><![CDATA[
+      cppcheck plugin for CLion.<br/><br/>
+
+      <b>Features:</b><br/>
+        Runs cppcheck on the fly while you write code.<br/>
+        Highlights liens and displays cppcheck error messages.<br/>
+        Supports passing options to cppcheck.<br/>
+
+      <b>Usage:</b><br/>
+        Install the cppcheck plugin.
+        File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the <b>absolute<b>
+        path of the cppcheck executable.
+    ]]></description>
+
+  <change-notes><![CDATA[
+      1.0.0 First release.<br>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="143.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- enable plugin in all products -->
+  <depends>com.intellij.modules.lang</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <localInspection implementationClass="com.github.johnthagen.cppcheck.CppcheckInspection"
+                     displayName="cppcheck inspections"
+                     groupName="cppcheck"
+                     id="CppcheckInspection"
+                     level="WARNING"
+                     enabledByDefault="true"/>
+    <applicationConfigurable instance="com.github.johnthagen.cppcheck.Configuration"
+                             displayName="cppcheck configuration"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
