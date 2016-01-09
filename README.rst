@@ -1,7 +1,8 @@
 CLion-cppcheck
 ==============
 
-``cppcheck`` plugin for CLion.
+`cppcheck <http://cppcheck.sourceforge.net/>`_ plugin for
+`CLion <https://www.jetbrains.com/clion/>`_.
 
 - Runs ``cppcheck`` on the fly while you write code.
 - Highlights lines and displays ``cppcheck`` error messages.
