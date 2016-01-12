@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -19,7 +19,8 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.0 First release.<br>
+      1.0.1 Fix possible out of bounds line number when cppcheck
+      gets out of sync with in memory file.<br>
     ]]>
   </change-notes>
 

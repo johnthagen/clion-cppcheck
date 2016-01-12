@@ -79,6 +79,17 @@ public class CppcheckInspection extends LocalInspectionTool {
         final String severity = matcher.group(2);
         final String errorMessage = matcher.group(3);
 
+        // Because cppcheck runs on physical files, it's possible for the editor lines
+        // (lines in the IDE memory) to get out of sync from the lines on disk.
+        if (lineNumber > document.getLineCount()) {
+          lineNumber = document.getLineCount();
+        }
+
+        // Cppcheck error or parsing error.
+        if (lineNumber <= 0) {
+          continue;
+        }
+
         // Document counts lines starting at 0, rather than 1 like in cppcheck.
         lineNumber -= 1;
 

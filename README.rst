@@ -26,6 +26,11 @@ the ``cppcheck`` executable.
 Releases
 --------
 
+1.0.1 - 2016-01-11
+^^^^^^^^^^^^^^^^^^
+
+Fix possible out of bounds line number when ``cppcheck`` gets out of sync with in-memory file.
+
 1.0.0 - 2016-01-07
 ^^^^^^^^^^^^^^^^^^
 
