@@ -19,12 +19,17 @@ See `Installing, Updating and Uninstalling Repository Plugins
 Usage
 -----
 
-1. Install the cppcheck plugin.
-2. File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the **absolute** path to
-the ``cppcheck`` executable.
+#. Install the cppcheck plugin.
+#. File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the **absolute** path to
+   the ``cppcheck`` executable.
 
 Releases
 --------
+
+1.0.2 - 2016-01-19
+^^^^^^^^^^^^^^^^^^
+
+Fix execution on Linux.
 
 1.0.1 - 2016-01-11
 ^^^^^^^^^^^^^^^^^^
