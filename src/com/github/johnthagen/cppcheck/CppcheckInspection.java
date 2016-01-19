@@ -104,17 +104,21 @@ public class CppcheckInspection extends LocalInspectionTool {
           true);
         descriptors.add(problemDescriptor);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException ex) {
+      Notifications.Bus.notify(new Notification("cppcheck",
+                                                "Error",
+                                                "IOException: " + ex.getMessage(),
+                                                NotificationType.INFORMATION));
+      ex.printStackTrace();
     }
 
     return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
   }
 
-  private static String executeCommandOnFile(String command,
-                                             String options,
-                                             @NotNull PsiFile file) throws IOException {
-    final String executionString = "\"" + command + "\" "+
+  private static String executeCommandOnFile(final String command,
+                                             final String options,
+                                             @NotNull final PsiFile file) throws IOException {
+    final String executionString = command + " " +
                                    options + " " +
                                    "\"" + file.getVirtualFile().getCanonicalPath() + "\"";
 
@@ -131,13 +135,24 @@ public class CppcheckInspection extends LocalInspectionTool {
           while ((line = errStream.readLine()) != null) {
             errString.append(line).append("\n");
           }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
+          Notifications.Bus.notify(new Notification("cppcheck",
+                                                    "Error",
+                                                    "IOException: " + ex.getMessage(),
+                                                    NotificationType.INFORMATION));
           ex.printStackTrace();
-        } finally {
+        }
+        finally {
           try {
             errStream.close();
-          } catch (IOException e) {
-            e.printStackTrace();
+          }
+          catch (IOException ex) {
+            Notifications.Bus.notify(new Notification("cppcheck",
+                                                      "Error",
+                                                      "IOException: " + ex.getMessage(),
+                                                      NotificationType.INFORMATION));
+            ex.printStackTrace();
           }
         }
       }
@@ -146,14 +161,18 @@ public class CppcheckInspection extends LocalInspectionTool {
 
     try {
       errorThread.join();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    } catch (InterruptedException ex) {
+      Notifications.Bus.notify(new Notification("cppcheck",
+                                                "Error",
+                                                "IOException: " + ex.getMessage(),
+                                                NotificationType.INFORMATION));
+      ex.printStackTrace();
     }
 
     return errString.toString();
   }
 
-  private static boolean isCFamilyFile(@NotNull PsiFile file){
+  private static boolean isCFamilyFile(@NotNull final PsiFile file){
     final String lowerFileExtension = file.getVirtualFile().getExtension().toLowerCase();
     if (lowerFileExtension.equals("c") ||
         lowerFileExtension.equals("cc") ||
