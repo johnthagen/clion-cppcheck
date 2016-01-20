@@ -9,7 +9,7 @@
 
       <b>Features:</b><br/>
         Runs cppcheck on the fly while you write code.<br/>
-        Highlights liens and displays cppcheck error messages.<br/>
+        Highlights lines and displays cppcheck error messages.<br/>
         Supports passing options to cppcheck.<br/>
 
       <b>Usage:</b><br/>
