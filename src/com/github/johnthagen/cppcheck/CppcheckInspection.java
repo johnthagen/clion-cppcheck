@@ -100,7 +100,7 @@ public class CppcheckInspection extends LocalInspectionTool {
           file,
           TextRange.create(lineStartOffset, lintEndOffset),
           "cppcheck: (" + severity + ") " + errorMessage,
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+          severityToHighlightType(severity),
           true);
         descriptors.add(problemDescriptor);
       }
@@ -186,6 +186,25 @@ public class CppcheckInspection extends LocalInspectionTool {
       return true;
     } else {
       return false;
+    }
+  }
+
+  private static ProblemHighlightType severityToHighlightType(@NotNull final String severity) {
+    switch (severity) {
+      case "error":
+        return ProblemHighlightType.GENERIC_ERROR;
+      case "warning":
+        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+      case "style":
+      case "performance":
+      case "portability":
+        return ProblemHighlightType.WEAK_WARNING;
+      case "information":
+        return ProblemHighlightType.INFORMATION;
+
+      // If the severity is not understood (changes in Cppcheck), return ERROR.
+      default:
+        return ProblemHighlightType.ERROR;
     }
   }
 }
