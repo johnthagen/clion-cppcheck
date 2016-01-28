@@ -97,9 +97,16 @@ public class CppcheckInspection extends LocalInspectionTool {
         final int lineStartOffset = document.getLineStartOffset(lineNumber);
         final int lintEndOffset = document.getLineEndOffset(lineNumber);
 
+        // Do not highlight empty whitespace prepended to lines.
+        String line_text = document.getImmutableCharSequence().subSequence(
+          lineStartOffset, lintEndOffset).toString();
+
+        final int numberOfPrependedSpaces = line_text.length() -
+                                            line_text.replaceAll("^\\s+","").length();
+
         ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
           file,
-          TextRange.create(lineStartOffset, lintEndOffset),
+          TextRange.create(lineStartOffset + numberOfPrependedSpaces, lintEndOffset),
           "cppcheck: (" + severity + ") " + errorMessage,
           severityToHighlightType(severity),
           true);
