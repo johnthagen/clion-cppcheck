@@ -26,6 +26,11 @@ Usage
 Releases
 --------
 
+1.0.4 - 2016-01-28
+^^^^^^^^^^^^^^^^^^
+
+Fix highlighting prepended whitespace.
+
 1.0.3 - 2016-01-22
 ^^^^^^^^^^^^^^^^^^
 
