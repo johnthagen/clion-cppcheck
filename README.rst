@@ -1,6 +1,12 @@
 CLion-cppcheck
 ==============
 
+.. image:: https://travis-ci.org/johnthagen/clion-cppcheck.svg
+    :target: https://travis-ci.org/johnthagen/clion-cppcheck
+
+.. image:: https://img.shields.io/coverity/scan/7859.svg
+    :target: https://travis-ci.org/johnthagen/cppcheck-junit
+
 `cppcheck <http://cppcheck.sourceforge.net/>`_ plugin for
 `CLion <https://www.jetbrains.com/clion/>`_.
 
