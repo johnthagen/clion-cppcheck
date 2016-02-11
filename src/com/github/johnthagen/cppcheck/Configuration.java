@@ -6,10 +6,7 @@ import com.intellij.ui.components.panels.VerticalLayout;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.JTextField;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -17,6 +14,10 @@ public class Configuration implements Configurable {
   private boolean modified = false;
   private JFilePicker cppcheckFilePicker;
   private JTextField cppcheckOptionsField;
+  private static final String CPPCHECK_NOTE =
+    "Note: C++ projects should append --language=c++ to the cppcheck options to avoid some " +
+    "false positives in header files due to the fact that cppcheck implicitly defaults to " +
+    "setting --language to \"c\" for .h files.";
   private CppcheckConfigurationModifiedListener
     listener = new CppcheckConfigurationModifiedListener(this);
 
@@ -55,6 +56,10 @@ public class Configuration implements Configurable {
       Properties.set(CONFIGURATION_KEY_CPPCHECK_OPTIONS, cppcheckOptionsField.getText());
     }
 
+    JTextArea cppcheckNoteArea = new JTextArea(CPPCHECK_NOTE, 2, 80);
+    cppcheckNoteArea.setLineWrap(true);
+    cppcheckNoteArea.setWrapStyleWord(true);
+
     reset();
 
     cppcheckFilePicker.getTextField().getDocument().addDocumentListener(listener);
@@ -63,6 +68,7 @@ public class Configuration implements Configurable {
     jPanel.add(cppcheckFilePicker);
     jPanel.add(optionFieldLabel);
     jPanel.add(cppcheckOptionsField);
+    jPanel.add(cppcheckNoteArea);
 
     return jPanel;
   }

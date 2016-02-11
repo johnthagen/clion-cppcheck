@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -14,8 +14,15 @@
 
       <b>Usage:</b><br/>
         Install the cppcheck plugin.
-        File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the <b>absolute</b>
-        path of the cppcheck executable.
+        File -> Settings -> Other Settings -> cppcheck configuration.<br/>
+        Fill in the <b>absolute</b> path of the cppcheck executable.<br/>
+
+      <b>Known issues:</b><br/>
+        Cppcheck is not designed to be run on header files (.h) directly, as must be done for this
+        plugin, and as a result may have false positives.<br/>
+        When run on header files directly, Cppcheck defaults to C as the language, which will
+        generate false positives for C++ projects. C++ projects should append --language=c++ to the
+        cppcheck options.<br/>
     ]]></description>
 
   <change-notes><![CDATA[
