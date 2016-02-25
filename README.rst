@@ -42,6 +42,11 @@ false positives for C++ projects.  C++ projects should append ``--language=c++``
 Releases
 --------
 
+1.0.6 - 2016-02-25
+^^^^^^^^^^^^^^^^^^
+
+Fix NullPointerException when opening files with no extension.
+
 1.0.5 - 2016-02-11
 ^^^^^^^^^^^^^^^^^^
 

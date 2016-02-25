@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -26,7 +26,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.4 Fix highlighting prepended whitespace.<br>
+      1.0.6 Fix NullPointerException when opening files with no extension.<br>
     ]]>
   </change-notes>
 
