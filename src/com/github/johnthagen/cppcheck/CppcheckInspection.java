@@ -180,20 +180,28 @@ public class CppcheckInspection extends LocalInspectionTool {
     return errString.toString();
   }
 
-  private static boolean isCFamilyFile(@NotNull final PsiFile file){
-    final String lowerFileExtension = file.getVirtualFile().getExtension().toLowerCase();
-    if (lowerFileExtension.equals("c") ||
-        lowerFileExtension.equals("cc") ||
-        lowerFileExtension.equals("cp") ||
-        lowerFileExtension.equals("cpp") ||
-        lowerFileExtension.equals("c++") ||
-        lowerFileExtension.equals("cxx") ||
-        lowerFileExtension.equals("h") ||
-        lowerFileExtension.equals("hh") ||
-        lowerFileExtension.equals("hpp")) {
-      return true;
-    } else {
+  private static boolean isCFamilyFile(@NotNull final PsiFile file) {
+    final String fileExtension = file.getVirtualFile().getExtension();
+
+    if (fileExtension == null) {
       return false;
+    }
+    else {
+      final String lowerFileExtension = fileExtension.toLowerCase();
+      if (lowerFileExtension.equals("c") ||
+          lowerFileExtension.equals("cc") ||
+          lowerFileExtension.equals("cp") ||
+          lowerFileExtension.equals("cpp") ||
+          lowerFileExtension.equals("c++") ||
+          lowerFileExtension.equals("cxx") ||
+          lowerFileExtension.equals("h") ||
+          lowerFileExtension.equals("hh") ||
+          lowerFileExtension.equals("hpp")) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 
