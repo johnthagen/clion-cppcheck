@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +66,7 @@ public class CppcheckInspection extends LocalInspectionTool {
       // Example output line:
       // [C:\Users\John Hagen\ClionProjects\test\main.cpp:12]: (style) Variable 'a' is not assigned a value.
       // [main.cpp:12] -> [main.cpp:14]: (performance) Variable 'a' is reassigned a value before the old one has been used.
-      Pattern pattern = Pattern.compile("^\\[.+:(\\d+)\\]:\\s+\\((\\w+)\\)\\s+(.+)");
+      Pattern pattern = Pattern.compile("^\\[(.+):(\\d+)\\]:\\s+\\((\\w+)\\)\\s+(.+)");
 
       String line;
       while (scanner.hasNext()) {
@@ -76,9 +77,21 @@ public class CppcheckInspection extends LocalInspectionTool {
           continue;
         }
 
-        int lineNumber = Integer.parseInt(matcher.group(1), 10);
-        final String severity = matcher.group(2);
-        final String errorMessage = matcher.group(3);
+        final String fileName = Paths.get(matcher.group(1)).getFileName().toString();
+        int lineNumber = Integer.parseInt(matcher.group(2), 10);
+        final String severity = matcher.group(3);
+        final String errorMessage = matcher.group(4);
+
+        // If a .c or .cpp file #include's header files, Cppcheck will also run on the header files and print
+        // any errors. These errors don't apply to the current .cpp field and should not be drawn. They can
+        // be distinguished by checking the file name.
+        // Example:
+        //   Checking Test.cpp ...
+        //   [Test.h:2]: (style) Unused variable: x
+        //   [Test.cpp:3]: (style) Unused variable: y
+        if (!fileName.equals(file.getName())) {
+          continue;
+        }
 
         // Because cppcheck runs on physical files, it's possible for the editor lines
         // (lines in the IDE memory) to get out of sync from the lines on disk.
