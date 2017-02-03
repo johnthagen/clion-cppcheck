@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -11,11 +11,16 @@
         Runs cppcheck on the fly while you write code.<br/>
         Highlights lines and displays cppcheck error messages.<br/>
         Supports passing options to cppcheck.<br/>
+        <br/>
 
       <b>Usage:</b><br/>
-        Install the cppcheck plugin.
+        Install the <a href="http://cppcheck.sourceforge.net/">Cppcheck analysis tool</a>
+        (<b>not</b> bundled with this plugin).<br/>
+        Install the cppcheck plugin.<br/>
         File -> Settings -> Other Settings -> cppcheck configuration.<br/>
-        Fill in the <b>absolute</b> path of the cppcheck executable.<br/>
+        Fill in the <b>absolute</b> path of the cppcheck executable (e.g. C:\Program Files (x86)\Cppcheck\cppcheck.exe,
+        /usr/bin/cppcheck, etc).<br/>
+        <br/>
 
       <b>Known issues:</b><br/>
         Cppcheck is not designed to be run on header files (.h) directly, as must be done for this
@@ -26,7 +31,11 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.6 Fix NullPointerException when opening files with no extension.<br>
+      1.0.7 Avoid drawing errors in .cpp and .c files from header files they import.<br/>
+      1.0.6 Fix NullPointerException when opening files with no extension.<br/>
+      1.0.5 Add warning about header file false positives for C++ projects.<br/>
+      1.0.4 Fix highlighting prepended whitespace.<br/>
+      1.0.3 Highlight line corresponding to severity.<br/>
     ]]>
   </change-notes>
 
