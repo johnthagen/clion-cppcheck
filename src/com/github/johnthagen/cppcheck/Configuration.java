@@ -78,8 +78,8 @@ public class Configuration implements Configurable {
     return modified;
   }
 
-  public void setModified(boolean modified) {
-    this.modified = modified;
+  public void setModified() {
+    this.modified = true;
   }
 
   @Override
@@ -109,23 +109,23 @@ public class Configuration implements Configurable {
   private static class CppcheckConfigurationModifiedListener implements DocumentListener {
     private final Configuration option;
 
-    public CppcheckConfigurationModifiedListener(Configuration option) {
+    CppcheckConfigurationModifiedListener(Configuration option) {
       this.option = option;
     }
 
     @Override
     public void insertUpdate(DocumentEvent documentEvent) {
-      option.setModified(true);
+      option.setModified();
     }
 
     @Override
     public void removeUpdate(DocumentEvent documentEvent) {
-      option.setModified(true);
+      option.setModified();
     }
 
     @Override
     public void changedUpdate(DocumentEvent documentEvent) {
-      option.setModified(true);
+      option.setModified();
     }
   }
 }
