@@ -25,6 +25,7 @@ See `Installing, Updating and Uninstalling Repository Plugins
 Usage
 -----
 
+#. Install the ``cppcheck`` analysis tool (**not** bundled with this plugin).
 #. Install the cppcheck plugin.
 #. File -> Settings -> Other Settings -> cppcheck configuration.  Fill in the **absolute** path to
    the ``cppcheck`` executable.
