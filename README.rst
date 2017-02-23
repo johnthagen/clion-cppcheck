@@ -43,6 +43,11 @@ false positives for C++ projects.  C++ projects should append ``--language=c++``
 Releases
 --------
 
+1.0.7 - 2016-02-03
+^^^^^^^^^^^^^^^^^^
+
+Avoid drawing errors in .cpp and .c files from header files they import.
+
 1.0.6 - 2016-02-25
 ^^^^^^^^^^^^^^^^^^
 
