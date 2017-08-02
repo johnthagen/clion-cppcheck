@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -31,11 +31,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.7 Avoid drawing errors in .cpp and .c files from header files they import.<br/>
-      1.0.6 Fix NullPointerException when opening files with no extension.<br/>
-      1.0.5 Add warning about header file false positives for C++ projects.<br/>
-      1.0.4 Fix highlighting prepended whitespace.<br/>
-      1.0.3 Highlight line corresponding to severity.<br/>
+      1.0.8 Fix handling Cppcheck errors that span multiple lines.<br/>
     ]]>
   </change-notes>
 
