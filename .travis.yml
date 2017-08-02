@@ -4,4 +4,4 @@ jdk:
   - oraclejdk8
 
 notifications:
-    false
+    email: false
