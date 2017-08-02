@@ -43,6 +43,11 @@ false positives for C++ projects.  C++ projects should append ``--language=c++``
 Releases
 --------
 
+1.0.8 - 2017-08-02
+^^^^^^^^^^^^^^^^^^
+
+Fix handling Cppcheck errors that span multiple lines.
+
 1.0.7 - 2017-02-03
 ^^^^^^^^^^^^^^^^^^
 
