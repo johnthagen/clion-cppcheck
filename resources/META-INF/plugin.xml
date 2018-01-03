@@ -60,7 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.9 Improve guide instructions<br/>
+      1.0.9 Improve guide instructions. Default to using --language=c++ cppcheck option.<br/>
     ]]>
   </change-notes>
 
