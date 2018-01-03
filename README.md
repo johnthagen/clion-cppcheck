@@ -7,7 +7,7 @@
 ## Installation
 
 See 
-[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/idea/?procedures.plugins.update.common)
+[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/installing-updating-and-uninstalling-repository-plugins.html)
 
 - [`cppcheck` in JetBrains Plugin Repository][cppcheck_plugin]
 
