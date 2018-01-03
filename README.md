@@ -13,8 +13,8 @@ See
 
 ## Usage
 
-1. Install the [`cppcheck`](http://cppcheck.sourceforge.net/) tool using directions on its homepage. This plugin does 
-   **not** bundled the `cppcheck` tool itself, which must be installed separately.
+1. Install the [`cppcheck`](http://cppcheck.sourceforge.net/) tool using the instructions on its homepage. This plugin
+   does **not** bundled the `cppcheck` tool itself, which must be installed separately.
 2. Install the [cppcheck plugin][cppcheck_plugin] into CLion.
 3. Configure the plugin with the **absolute** path to the `cppcheck` executable into the `cppcheck path` option.
     1. Windows
