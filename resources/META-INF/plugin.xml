@@ -1,37 +1,66 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
-      cppcheck plugin for CLion.<br/><br/>
+      Cppcheck plugin for CLion.<br/><br/>
 
       <b>Features:</b><br/>
-        Runs cppcheck on the fly while you write code.<br/>
-        Highlights lines and displays cppcheck error messages.<br/>
-        Supports passing options to cppcheck.<br/>
-        <br/>
+      <ul>
+        <li>Runs <tt>cppcheck</tt> on the fly while you write code</li>
+        <li>Highlights lines and displays <tt>cppcheck</tt> error messages</li>
+        <li>Supports passing options to <tt>cppcheck</tt></li>
+      </ul>
+      <br/>
 
       <b>Usage:</b><br/>
-        Install the <a href="http://cppcheck.sourceforge.net/">Cppcheck analysis tool</a>
-        (<b>not</b> bundled with this plugin).<br/>
-        Install the cppcheck plugin.<br/>
-        File -> Settings -> Other Settings -> cppcheck configuration.<br/>
-        Fill in the <b>absolute</b> path of the cppcheck executable (e.g. C:\Program Files (x86)\Cppcheck\cppcheck.exe,
-        /usr/bin/cppcheck, etc).<br/>
-        <br/>
+      <ul>
+        <li>
+          Install the <a href="http://cppcheck.sourceforge.net/">cppcheck tool</a> using directions on its homepage.
+          This plugin does <b>not</b> bundle the <tt>cppcheck</tt> tool itself, which must be installed separately.
+        </li>
+        <li>Install this cppcheck plugin into CLion</li>
+        <li>Configure the plugin with the <b>absolute</b> path the to <tt>cppcheck</tt> executable into the
+        'cppcheck path' configuration field</li>
+        <ul>
+          <li>Windows
+            <ul>
+              <li>File | Settings | cppcheck configuration</li>
+              <li>Usually the path is <tt>C:\Program Files (x86)\Cppcheck\cppcheck.exe</tt></li>
+            </ul>
+          </li>
+          <li>macOS
+             <ul>
+               <li>CLion | Preferences | cppcheck configuration</li>
+               <li>In a terminal run <tt>which cppcheck</tt> to find the path to cppcheck.
+               If you installed it with <a href="https://brew.sh/">Homebrew</a>, the path will be
+               <tt>/usr/local/bin/cppcheck</tt></li>
+             </ul>
+          </li>
+          <li>Linux
+            <ul>
+              <li>File | Settings | cppcheck configuration</li>
+              <li>In a terminal run <tt>which cppcheck</tt> to find the path to cppcheck.
+              If you installed it with your system's package manager, it is probably located at
+              <tt>/usr/bin/cppcheck</tt></li>
+            </ul>
+          </li>
+        </u1>
+      </ul>
+      <br/>
 
       <b>Known issues:</b><br/>
-        Cppcheck is not designed to be run on header files (.h) directly, as must be done for this
+        <tt>cppcheck</tt> is not designed to be run on header files (<tt>.h</tt>) directly, as must be done for this
         plugin, and as a result may have false positives.<br/>
-        When run on header files directly, Cppcheck defaults to C as the language, which will
-        generate false positives for C++ projects. C++ projects should append --language=c++ to the
+        When run on header files directly, <tt>cppcheck</tt> defaults to C as the language, which will
+        generate false positives for C++ projects. C++ projects should leave <tt>--language=c++</tt> appended to the
         cppcheck options.<br/>
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.8 Fix handling Cppcheck errors that span multiple lines.<br/>
+      1.0.9 Improve guide instructions<br/>
     ]]>
   </change-notes>
 
