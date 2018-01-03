@@ -15,7 +15,7 @@ public class Configuration implements Configurable {
   private JFilePicker cppcheckFilePicker;
   private JTextField cppcheckOptionsField;
   private static final String CPPCHECK_NOTE =
-    "Note: C++ projects should append --language=c++ to the cppcheck options to avoid some " +
+    "Note: C++ projects should leave --language=c++ appended to the cppcheck options to avoid some " +
     "false positives in header files due to the fact that cppcheck implicitly defaults to " +
     "setting --language to \"c\" for .h files.";
   private CppcheckConfigurationModifiedListener
@@ -24,7 +24,7 @@ public class Configuration implements Configurable {
   public static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
   public static final String CONFIGURATION_KEY_CPPCHECK_OPTIONS = "cppcheckOptions";
 
-  public static final String defaultOptions = "--enable=warning,performance,portability,style";
+  public static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++";
 
   @Nls
   @Override
