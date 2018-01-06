@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.0.9</version>
+  <version>1.0.10</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -60,7 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.0.9 Improve guide instructions. Default to using --language=c++ cppcheck option.<br/>
+      1.0.10 Fix formatting on plugin homepage.<br/>
     ]]>
   </change-notes>
 
