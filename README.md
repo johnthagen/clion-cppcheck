@@ -42,6 +42,10 @@ false positives for C++ projects.  C++ projects should append ``--language=c++``
 
 ## Releases
 
+### 1.0.10 - 2018-01-06
+
+Fix formatting on plugin homepage.
+
 ### 1.0.9 - 2018-01-02
 
 Improve the user's guide for installing and using the plugin. Default to using `--language=c++` Cppcheck option.
