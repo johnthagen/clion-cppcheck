@@ -4,22 +4,30 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.process.CapturingProcessHandler;
+import com.intellij.execution.process.ProcessOutput;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.progress.EmptyProgressIndicator;
+import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.execution.ParametersListUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -125,10 +133,10 @@ public class CppcheckInspection extends LocalInspectionTool {
           true);
         descriptors.add(problemDescriptor);
       }
-    } catch (IOException ex) {
+    } catch (ExecutionException ex) {
       Notifications.Bus.notify(new Notification("cppcheck",
                                                 "Error",
-                                                "IOException: " + ex.getMessage(),
+                                                "ExecutionException: " + ex.getMessage(),
                                                 NotificationType.INFORMATION));
       ex.printStackTrace();
     }
@@ -136,61 +144,31 @@ public class CppcheckInspection extends LocalInspectionTool {
     return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
   }
 
+  private static final int TIMEOUT_MS = 60 * 1000;
+
   private static String executeCommandOnFile(final String command,
                                              final String options,
-                                             @NotNull final PsiFile file) throws IOException {
-    final String executionString = command + " " +
-                                   options + " " +
-                                   "\"" + file.getVirtualFile().getCanonicalPath() + "\"";
+                                             @NotNull final PsiFile file) throws ExecutionException {
+    GeneralCommandLine cmd = new GeneralCommandLine()
+      .withExePath(command)
+      .withParameters(ParametersListUtil.parse(options))
+      .withParameters("\"" + file.getVirtualFile().getCanonicalPath() + "\"");
+    CapturingProcessHandler processHandler = new CapturingProcessHandler(cmd);
+    ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+    ProcessOutput output = processHandler.runProcessWithProgressIndicator(
+      indicator != null ? indicator : new EmptyProgressIndicator(),
+      TIMEOUT_MS);
 
-    final Process process = Runtime.getRuntime().exec(executionString);
+    if (output.isCancelled())
+      throw new ProcessCanceledException();
 
-    final StringBuilder errString = new StringBuilder();
-    Thread errorThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        BufferedReader errStream = new BufferedReader(new InputStreamReader(
-          process.getErrorStream()));
-        String line;
-        try {
-          while ((line = errStream.readLine()) != null) {
-            errString.append(line).append("\n");
-          }
-        }
-        catch (IOException ex) {
-          Notifications.Bus.notify(new Notification("cppcheck",
-                                                    "Error",
-                                                    "IOException: " + ex.getMessage(),
-                                                    NotificationType.INFORMATION));
-          ex.printStackTrace();
-        }
-        finally {
-          try {
-            errStream.close();
-          }
-          catch (IOException ex) {
-            Notifications.Bus.notify(new Notification("cppcheck",
-                                                      "Error",
-                                                      "IOException: " + ex.getMessage(),
-                                                      NotificationType.INFORMATION));
-            ex.printStackTrace();
-          }
-        }
-      }
-    });
-    errorThread.start();
+    if (output.isTimeout())
+      throw new ExecutionException(command + " has timed out");
 
-    try {
-      errorThread.join();
-    } catch (InterruptedException ex) {
-      Notifications.Bus.notify(new Notification("cppcheck",
-                                                "Error",
-                                                "IOException: " + ex.getMessage(),
-                                                NotificationType.INFORMATION));
-      ex.printStackTrace();
-    }
+    if (output.getExitCode() != 0)
+      throw new ExecutionException(command + " has finished with exit code " + output.getExitCode());
 
-    return errString.toString();
+    return output.getStderr();
   }
 
   private static boolean isCFamilyFile(@NotNull final PsiFile file) {
