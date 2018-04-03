@@ -33,14 +33,18 @@ See
 
 ## Known Issues
 
-``cppcheck`` is not designed to be run on header files (`.h`) directly, as must be done for this
+`cppcheck` is not designed to be run on header files (`.h`) directly, as must be done for this
 plugin, and as a result may have false positives.
 
-When run on header files directly, ``cppcheck`` defaults to C as the language, which will generate
-false positives for C++ projects.  C++ projects should append ``--language=c++`` to the
-``cppcheck`` options.
+When run on header files directly, `cppcheck` defaults to C as the language, which will generate
+false positives for C++ projects.  C++ projects should append `--language=c++` to the
+`cppcheck` options.
 
 ## Releases
+
+### 1.1.0 - 2018-04-02
+
+Use `CapturingProcessHandler` to fix read locking issues and spaces in path to source files.
 
 ### 1.0.10 - 2018-01-06
 
