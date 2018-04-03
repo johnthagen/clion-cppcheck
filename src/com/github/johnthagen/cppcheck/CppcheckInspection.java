@@ -159,14 +159,17 @@ public class CppcheckInspection extends LocalInspectionTool {
       indicator != null ? indicator : new EmptyProgressIndicator(),
       TIMEOUT_MS);
 
-    if (output.isCancelled())
+    if (output.isCancelled()) {
       throw new ProcessCanceledException();
+    }
 
-    if (output.isTimeout())
+    if (output.isTimeout()) {
       throw new ExecutionException(command + " has timed out");
+    }
 
-    if (output.getExitCode() != 0)
+    if (output.getExitCode() != 0) {
       throw new ExecutionException(command + " has finished with exit code " + output.getExitCode());
+    }
 
     return output.getStderr();
   }
