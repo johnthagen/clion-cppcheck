@@ -18,6 +18,7 @@ import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.execution.ParametersListUtil;
@@ -40,7 +41,8 @@ public class CppcheckInspection extends LocalInspectionTool {
     String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
     String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
-    if (!isCFamilyFile(file)) {
+    VirtualFile vFile = file.getVirtualFile();
+    if (vFile == null || !isCFamilyFile(vFile)) {
       return ProblemDescriptor.EMPTY_ARRAY;
     }
 
@@ -50,13 +52,13 @@ public class CppcheckInspection extends LocalInspectionTool {
       return ProblemDescriptor.EMPTY_ARRAY;
     }
 
-    Document document = FileDocumentManager.getInstance().getDocument(file.getVirtualFile());
+    Document document = FileDocumentManager.getInstance().getDocument(vFile);
     if (document == null || document.getLineCount() == 0) {
       return ProblemDescriptor.EMPTY_ARRAY;
     }
 
     try {
-      String cppcheckOutput = executeCommandOnFile(cppcheckPath, cppcheckOptions, file);
+      String cppcheckOutput = executeCommandOnFile(cppcheckPath, cppcheckOptions, vFile);
 
       if (!cppcheckOutput.isEmpty()) {
         List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput);
@@ -153,11 +155,11 @@ public class CppcheckInspection extends LocalInspectionTool {
 
   private static String executeCommandOnFile(final String command,
                                              final String options,
-                                             @NotNull final PsiFile file) throws ExecutionException {
+                                             @NotNull final VirtualFile file) throws ExecutionException {
     GeneralCommandLine cmd = new GeneralCommandLine()
       .withExePath(command)
       .withParameters(ParametersListUtil.parse(options))
-      .withParameters("\"" + file.getVirtualFile().getCanonicalPath() + "\"");
+      .withParameters("\"" + file.getCanonicalPath() + "\"");
     CapturingProcessHandler processHandler = new CapturingProcessHandler(cmd);
     ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
     ProcessOutput output = processHandler.runProcessWithProgressIndicator(
@@ -179,8 +181,8 @@ public class CppcheckInspection extends LocalInspectionTool {
     return output.getStderr();
   }
 
-  private static boolean isCFamilyFile(@NotNull final PsiFile file) {
-    final String fileExtension = file.getVirtualFile().getExtension();
+  private static boolean isCFamilyFile(@NotNull final VirtualFile file) {
+    final String fileExtension = file.getExtension();
 
     if (fileExtension == null) {
       return false;
