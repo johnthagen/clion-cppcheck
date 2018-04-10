@@ -18,6 +18,7 @@ import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
@@ -25,6 +26,8 @@ import com.intellij.util.execution.ParametersListUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,32 +60,52 @@ public class CppcheckInspection extends LocalInspectionTool {
       return ProblemDescriptor.EMPTY_ARRAY;
     }
 
+    File tempFile = null;
     try {
-      String cppcheckOutput = executeCommandOnFile(cppcheckPath, cppcheckOptions, vFile);
+      tempFile = FileUtil.createTempFile("", vFile.getName(), true);
+      FileUtil.writeToFile(tempFile, document.getText());
+      String cppcheckOutput = executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile), tempFile.getAbsolutePath());
 
       if (!cppcheckOutput.isEmpty()) {
-        List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput);
+        List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput, tempFile.getName());
         return descriptors.toArray(new ProblemDescriptor[0]);
       }
-    } catch (ExecutionException ex) {
+    } catch (ExecutionException | IOException ex) {
       Notifications.Bus.notify(new Notification("cppcheck",
                                                 "Error",
-                                                "ExecutionException: " + ex.getMessage(),
+                                                ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                                                 NotificationType.INFORMATION));
       ex.printStackTrace();
+    } finally {
+      if (tempFile != null) {
+        FileUtil.delete(tempFile);
+      }
     }
 
     return ProblemDescriptor.EMPTY_ARRAY;
   }
 
   @NotNull
-  private List<ProblemDescriptor> parseOutput(@NotNull PsiFile file, @NotNull InspectionManager manager, Document document, String cppcheckOutput) {
+  private static String prependIncludeDir(@NotNull String cppcheckOptions, @NotNull VirtualFile vFile) {
+    VirtualFile dir = vFile.getParent();
+    if (dir == null) return cppcheckOptions;
+    String path = dir.getCanonicalPath();
+    if (path == null) return cppcheckOptions;
+    return String.format("-I\"%s\" %s", path, cppcheckOptions);
+  }
+
+  @NotNull
+  private List<ProblemDescriptor> parseOutput(@NotNull PsiFile psiFile,
+                                              @NotNull InspectionManager manager,
+                                              @NotNull Document document,
+                                              @NotNull String cppcheckOutput,
+                                              @NotNull String sourceFileName) {
     List<ProblemDescriptor> descriptors = new ArrayList<>();
     Scanner scanner = new Scanner(cppcheckOutput);
 
     //Notifications.Bus.notify(new Notification("cppcheck",
     //                                          "Info",
-    //                                          file.getVirtualFile().getCanonicalPath() + "\n" +
+    //                                          psiFile.getVirtualFile().getCanonicalPath() + "\n" +
     //                                          cppcheckOutput,
     //                                          NotificationType.INFORMATION));
 
@@ -112,18 +135,12 @@ public class CppcheckInspection extends LocalInspectionTool {
       //   Checking Test.cpp ...
       //   [Test.h:2]: (style) Unused variable: x
       //   [Test.cpp:3]: (style) Unused variable: y
-      if (!fileName.equals(file.getName())) {
+      if (!fileName.equals(sourceFileName)) {
         continue;
       }
 
-      // Because cppcheck runs on physical files, it's possible for the editor lines
-      // (lines in the IDE memory) to get out of sync from the lines on disk.
-      if (lineNumber > document.getLineCount()) {
-        lineNumber = document.getLineCount();
-      }
-
       // Cppcheck error or parsing error.
-      if (lineNumber <= 0) {
+      if (lineNumber <= 0 || lineNumber >= document.getLineCount()) {
         continue;
       }
 
@@ -141,7 +158,7 @@ public class CppcheckInspection extends LocalInspectionTool {
                                           line_text.replaceAll("^\\s+","").length();
 
       ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-        file,
+        psiFile,
         TextRange.create(lineStartOffset + numberOfPrependedSpaces, lintEndOffset),
         "cppcheck: (" + severity + ") " + errorMessage,
         severityToHighlightType(severity),
@@ -155,11 +172,11 @@ public class CppcheckInspection extends LocalInspectionTool {
 
   private static String executeCommandOnFile(final String command,
                                              final String options,
-                                             @NotNull final VirtualFile file) throws ExecutionException {
+                                             @NotNull final String filePath) throws ExecutionException {
     GeneralCommandLine cmd = new GeneralCommandLine()
       .withExePath(command)
       .withParameters(ParametersListUtil.parse(options))
-      .withParameters("\"" + file.getCanonicalPath() + "\"");
+      .withParameters("\"" + filePath + "\"");
     CapturingProcessHandler processHandler = new CapturingProcessHandler(cmd);
     ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
     ProcessOutput output = processHandler.runProcessWithProgressIndicator(
