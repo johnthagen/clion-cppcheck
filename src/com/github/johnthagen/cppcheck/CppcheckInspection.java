@@ -37,101 +37,30 @@ public class CppcheckInspection extends LocalInspectionTool {
   public ProblemDescriptor[] checkFile(@NotNull PsiFile file,
                                        @NotNull InspectionManager manager,
                                        boolean isOnTheFly) {
-    List<ProblemDescriptor> descriptors = new ArrayList<>();
-
     String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
     String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
     if (!isCFamilyFile(file)) {
-      return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
+      return ProblemDescriptor.EMPTY_ARRAY;
     }
 
     if (cppcheckPath == null || cppcheckPath.isEmpty()) {
       StatusBar.Info.set("[!] Error: Please set path of cppcheck in File->Settings->Other Settings",
                          file.getProject());
-      return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
+      return ProblemDescriptor.EMPTY_ARRAY;
     }
 
     Document document = FileDocumentManager.getInstance().getDocument(file.getVirtualFile());
     if (document == null || document.getLineCount() == 0) {
-      return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
+      return ProblemDescriptor.EMPTY_ARRAY;
     }
 
     try {
       String cppcheckOutput = executeCommandOnFile(cppcheckPath, cppcheckOptions, file);
 
-      if (cppcheckOutput.isEmpty()) {
-        return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
-      }
-      Scanner scanner = new Scanner(cppcheckOutput);
-
-      //Notifications.Bus.notify(new Notification("cppcheck",
-      //                                          "Info",
-      //                                          file.getVirtualFile().getCanonicalPath() + "\n" +
-      //                                          cppcheckOutput,
-      //                                          NotificationType.INFORMATION));
-
-      // Example output line:
-      // [C:\Users\John Hagen\ClionProjects\test\main.cpp:12]: (style) Variable 'a' is not assigned a value.
-      // [main.cpp:12] -> [main.cpp:14]: (performance) Variable 'a' is reassigned a value before the old one has been used.
-      Pattern pattern = Pattern.compile("^\\[(.+?):(\\d+)\\](?:\\s+->\\s+\\[.+\\])?:\\s+\\((\\w+)\\)\\s+(.+)");
-
-      String line;
-      while (scanner.hasNext()) {
-        line = scanner.nextLine();
-        Matcher matcher = pattern.matcher(line);
-
-        if (!matcher.matches()) {
-          continue;
-        }
-
-        final String fileName = Paths.get(matcher.group(1)).getFileName().toString();
-        int lineNumber = Integer.parseInt(matcher.group(2), 10);
-        final String severity = matcher.group(3);
-        final String errorMessage = matcher.group(4);
-
-        // If a .c or .cpp file #include's header files, Cppcheck will also run on the header files and print
-        // any errors. These errors don't apply to the current .cpp field and should not be drawn. They can
-        // be distinguished by checking the file name.
-        // Example:
-        //   Checking Test.cpp ...
-        //   [Test.h:2]: (style) Unused variable: x
-        //   [Test.cpp:3]: (style) Unused variable: y
-        if (!fileName.equals(file.getName())) {
-          continue;
-        }
-
-        // Because cppcheck runs on physical files, it's possible for the editor lines
-        // (lines in the IDE memory) to get out of sync from the lines on disk.
-        if (lineNumber > document.getLineCount()) {
-          lineNumber = document.getLineCount();
-        }
-
-        // Cppcheck error or parsing error.
-        if (lineNumber <= 0) {
-          continue;
-        }
-
-        // Document counts lines starting at 0, rather than 1 like in cppcheck.
-        lineNumber -= 1;
-
-        final int lineStartOffset = document.getLineStartOffset(lineNumber);
-        final int lintEndOffset = document.getLineEndOffset(lineNumber);
-
-        // Do not highlight empty whitespace prepended to lines.
-        String line_text = document.getImmutableCharSequence().subSequence(
-          lineStartOffset, lintEndOffset).toString();
-
-        final int numberOfPrependedSpaces = line_text.length() -
-                                            line_text.replaceAll("^\\s+","").length();
-
-        ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-          file,
-          TextRange.create(lineStartOffset + numberOfPrependedSpaces, lintEndOffset),
-          "cppcheck: (" + severity + ") " + errorMessage,
-          severityToHighlightType(severity),
-          true);
-        descriptors.add(problemDescriptor);
+      if (!cppcheckOutput.isEmpty()) {
+        List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput);
+        return descriptors.toArray(new ProblemDescriptor[0]);
       }
     } catch (ExecutionException ex) {
       Notifications.Bus.notify(new Notification("cppcheck",
@@ -141,7 +70,83 @@ public class CppcheckInspection extends LocalInspectionTool {
       ex.printStackTrace();
     }
 
-    return descriptors.toArray(new ProblemDescriptor[descriptors.size()]);
+    return ProblemDescriptor.EMPTY_ARRAY;
+  }
+
+  @NotNull
+  private List<ProblemDescriptor> parseOutput(@NotNull PsiFile file, @NotNull InspectionManager manager, Document document, String cppcheckOutput) {
+    List<ProblemDescriptor> descriptors = new ArrayList<>();
+    Scanner scanner = new Scanner(cppcheckOutput);
+
+    //Notifications.Bus.notify(new Notification("cppcheck",
+    //                                          "Info",
+    //                                          file.getVirtualFile().getCanonicalPath() + "\n" +
+    //                                          cppcheckOutput,
+    //                                          NotificationType.INFORMATION));
+
+    // Example output line:
+    // [C:\Users\John Hagen\ClionProjects\test\main.cpp:12]: (style) Variable 'a' is not assigned a value.
+    // [main.cpp:12] -> [main.cpp:14]: (performance) Variable 'a' is reassigned a value before the old one has been used.
+    Pattern pattern = Pattern.compile("^\\[(.+?):(\\d+)\\](?:\\s+->\\s+\\[.+\\])?:\\s+\\((\\w+)\\)\\s+(.+)");
+
+    String line;
+    while (scanner.hasNext()) {
+      line = scanner.nextLine();
+      Matcher matcher = pattern.matcher(line);
+
+      if (!matcher.matches()) {
+        continue;
+      }
+
+      final String fileName = Paths.get(matcher.group(1)).getFileName().toString();
+      int lineNumber = Integer.parseInt(matcher.group(2), 10);
+      final String severity = matcher.group(3);
+      final String errorMessage = matcher.group(4);
+
+      // If a .c or .cpp file #include's header files, Cppcheck will also run on the header files and print
+      // any errors. These errors don't apply to the current .cpp field and should not be drawn. They can
+      // be distinguished by checking the file name.
+      // Example:
+      //   Checking Test.cpp ...
+      //   [Test.h:2]: (style) Unused variable: x
+      //   [Test.cpp:3]: (style) Unused variable: y
+      if (!fileName.equals(file.getName())) {
+        continue;
+      }
+
+      // Because cppcheck runs on physical files, it's possible for the editor lines
+      // (lines in the IDE memory) to get out of sync from the lines on disk.
+      if (lineNumber > document.getLineCount()) {
+        lineNumber = document.getLineCount();
+      }
+
+      // Cppcheck error or parsing error.
+      if (lineNumber <= 0) {
+        continue;
+      }
+
+      // Document counts lines starting at 0, rather than 1 like in cppcheck.
+      lineNumber -= 1;
+
+      final int lineStartOffset = document.getLineStartOffset(lineNumber);
+      final int lintEndOffset = document.getLineEndOffset(lineNumber);
+
+      // Do not highlight empty whitespace prepended to lines.
+      String line_text = document.getImmutableCharSequence().subSequence(
+        lineStartOffset, lintEndOffset).toString();
+
+      final int numberOfPrependedSpaces = line_text.length() -
+                                          line_text.replaceAll("^\\s+","").length();
+
+      ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
+        file,
+        TextRange.create(lineStartOffset + numberOfPrependedSpaces, lintEndOffset),
+        "cppcheck: (" + severity + ") " + errorMessage,
+        severityToHighlightType(severity),
+        true);
+      descriptors.add(problemDescriptor);
+    }
+    return descriptors;
   }
 
   private static final int TIMEOUT_MS = 60 * 1000;
