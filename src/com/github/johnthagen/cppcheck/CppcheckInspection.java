@@ -22,6 +22,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.DocumentUtil;
 import com.intellij.util.execution.ParametersListUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -147,19 +148,12 @@ public class CppcheckInspection extends LocalInspectionTool {
       // Document counts lines starting at 0, rather than 1 like in cppcheck.
       lineNumber -= 1;
 
-      final int lineStartOffset = document.getLineStartOffset(lineNumber);
+      final int lineStartOffset = DocumentUtil.getFirstNonSpaceCharOffset(document, lineNumber);
       final int lintEndOffset = document.getLineEndOffset(lineNumber);
-
-      // Do not highlight empty whitespace prepended to lines.
-      String line_text = document.getImmutableCharSequence().subSequence(
-        lineStartOffset, lintEndOffset).toString();
-
-      final int numberOfPrependedSpaces = line_text.length() -
-                                          line_text.replaceAll("^\\s+","").length();
 
       ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
         psiFile,
-        TextRange.create(lineStartOffset + numberOfPrependedSpaces, lintEndOffset),
+        TextRange.create(lineStartOffset, lintEndOffset),
         "cppcheck: (" + severity + ") " + errorMessage,
         severityToHighlightType(severity),
         true);
