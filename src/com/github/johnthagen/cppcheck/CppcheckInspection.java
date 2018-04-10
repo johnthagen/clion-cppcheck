@@ -141,7 +141,7 @@ public class CppcheckInspection extends LocalInspectionTool {
       }
 
       // Cppcheck error or parsing error.
-      if (lineNumber <= 0 || lineNumber >= document.getLineCount()) {
+      if (lineNumber <= 0 || lineNumber > document.getLineCount()) {
         continue;
       }
 
