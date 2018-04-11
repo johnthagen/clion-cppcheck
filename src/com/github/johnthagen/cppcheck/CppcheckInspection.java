@@ -199,7 +199,7 @@ public class CppcheckInspection extends LocalInspectionTool {
       return false;
     } else {
       final String lowerFileExtension = fileExtension.toLowerCase();
-      if (lowerFileExtension.equals("c") ||
+      return lowerFileExtension.equals("c") ||
         lowerFileExtension.equals("cc") ||
         lowerFileExtension.equals("cp") ||
         lowerFileExtension.equals("cpp") ||
@@ -207,11 +207,7 @@ public class CppcheckInspection extends LocalInspectionTool {
         lowerFileExtension.equals("cxx") ||
         lowerFileExtension.equals("h") ||
         lowerFileExtension.equals("hh") ||
-        lowerFileExtension.equals("hpp")) {
-        return true;
-      } else {
-        return false;
-      }
+        lowerFileExtension.equals("hpp");
     }
   }
 
