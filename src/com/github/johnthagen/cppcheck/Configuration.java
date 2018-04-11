@@ -83,7 +83,7 @@ public class Configuration implements Configurable {
   }
 
   @Override
-  public void apply() throws ConfigurationException {
+  public void apply() {
     Properties.set(CONFIGURATION_KEY_CPPCHECK_PATH, cppcheckFilePicker.getTextField().getText());
     Properties.set(CONFIGURATION_KEY_CPPCHECK_OPTIONS, cppcheckOptionsField.getText());
     modified = false;
