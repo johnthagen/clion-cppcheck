@@ -21,10 +21,10 @@ public class Configuration implements Configurable {
   private CppcheckConfigurationModifiedListener
     listener = new CppcheckConfigurationModifiedListener(this);
 
-  public static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
-  public static final String CONFIGURATION_KEY_CPPCHECK_OPTIONS = "cppcheckOptions";
+  static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
+  static final String CONFIGURATION_KEY_CPPCHECK_OPTIONS = "cppcheckOptions";
 
-  public static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++";
+  private static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++";
 
   @Nls
   @Override
@@ -78,7 +78,7 @@ public class Configuration implements Configurable {
     return modified;
   }
 
-  public void setModified() {
+  private void setModified() {
     this.modified = true;
   }
 

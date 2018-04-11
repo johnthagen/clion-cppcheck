@@ -9,11 +9,11 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JFilePicker extends JPanel {
+class JFilePicker extends JPanel {
   private JTextField textField;
   private JFileChooser fileChooser;
 
-  public JFilePicker(String textFieldLabel, String buttonLabel) {
+  JFilePicker(String textFieldLabel, String buttonLabel) {
     fileChooser = new JFileChooser();
 
     setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -35,7 +35,7 @@ public class JFilePicker extends JPanel {
     add(button);
   }
 
-  public JTextField getTextField() {
+  JTextField getTextField() {
     return textField;
   }
 
