@@ -44,7 +44,8 @@ false positives for C++ projects.  C++ projects should append `--language=c++` t
 
 ### 1.1.0 - 2018-04-02
 
-Use `CapturingProcessHandler` to fix read locking issues and spaces in path to source files.
+Use `CapturingProcessHandler` to fix read locking issues and spaces in path to source files. 
+(Contribution by @fastasturtle)
 
 ### 1.0.10 - 2018-01-06
 
