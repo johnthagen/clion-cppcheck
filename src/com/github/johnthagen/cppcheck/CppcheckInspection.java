@@ -164,8 +164,8 @@ public class CppcheckInspection extends LocalInspectionTool {
 
   private static final int TIMEOUT_MS = 60 * 1000;
 
-  private static String executeCommandOnFile(final String command,
-                                             final String options,
+  private static String executeCommandOnFile(@NotNull final String command,
+                                             @NotNull final String options,
                                              @NotNull final String filePath) throws ExecutionException {
     GeneralCommandLine cmd = new GeneralCommandLine()
       .withExePath(command)
