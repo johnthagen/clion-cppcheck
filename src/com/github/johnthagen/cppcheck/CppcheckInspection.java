@@ -52,7 +52,7 @@ public class CppcheckInspection extends LocalInspectionTool {
 
     if (cppcheckPath == null || cppcheckPath.isEmpty()) {
       StatusBar.Info.set("[!] Error: Please set path of cppcheck in File->Settings->Other Settings",
-                         file.getProject());
+        file.getProject());
       return ProblemDescriptor.EMPTY_ARRAY;
     }
 
@@ -73,9 +73,9 @@ public class CppcheckInspection extends LocalInspectionTool {
       }
     } catch (ExecutionException | IOException ex) {
       Notifications.Bus.notify(new Notification("cppcheck",
-                                                "Error",
-                                                ex.getClass().getSimpleName() + ": " + ex.getMessage(),
-                                                NotificationType.INFORMATION));
+        "Error",
+        ex.getClass().getSimpleName() + ": " + ex.getMessage(),
+        NotificationType.INFORMATION));
       ex.printStackTrace();
     } finally {
       if (tempFile != null) {
@@ -197,21 +197,19 @@ public class CppcheckInspection extends LocalInspectionTool {
 
     if (fileExtension == null) {
       return false;
-    }
-    else {
+    } else {
       final String lowerFileExtension = fileExtension.toLowerCase();
       if (lowerFileExtension.equals("c") ||
-          lowerFileExtension.equals("cc") ||
-          lowerFileExtension.equals("cp") ||
-          lowerFileExtension.equals("cpp") ||
-          lowerFileExtension.equals("c++") ||
-          lowerFileExtension.equals("cxx") ||
-          lowerFileExtension.equals("h") ||
-          lowerFileExtension.equals("hh") ||
-          lowerFileExtension.equals("hpp")) {
+        lowerFileExtension.equals("cc") ||
+        lowerFileExtension.equals("cp") ||
+        lowerFileExtension.equals("cpp") ||
+        lowerFileExtension.equals("c++") ||
+        lowerFileExtension.equals("cxx") ||
+        lowerFileExtension.equals("h") ||
+        lowerFileExtension.equals("hh") ||
+        lowerFileExtension.equals("hpp")) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
     }
