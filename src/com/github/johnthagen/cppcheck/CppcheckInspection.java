@@ -65,7 +65,8 @@ public class CppcheckInspection extends LocalInspectionTool {
     try {
       tempFile = FileUtil.createTempFile("", vFile.getName(), true);
       FileUtil.writeToFile(tempFile, document.getText());
-      String cppcheckOutput = executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile), tempFile.getAbsolutePath());
+      String cppcheckOutput =
+        executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile), tempFile.getAbsolutePath());
 
       if (!cppcheckOutput.isEmpty()) {
         List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput, tempFile.getName());
