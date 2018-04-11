@@ -42,6 +42,11 @@ false positives for C++ projects.  C++ projects should append `--language=c++` t
 
 ## Releases
 
+### 1.2.0 - 2018-04-11
+
+Greatly improve plugin responsiveness to changes by using virtual files to interact with `cppcheck`.
+(Contribution by @fastasturtle)
+
 ### 1.1.0 - 2018-04-02
 
 Use `CapturingProcessHandler` to fix read locking issues and spaces in path to source files. 

@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -60,7 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.1.0 Use CapturingProcessHandler to fix read locking issues and spaces in path to source files.<br/>
+      1.2.0 Greatly improve plugin responsiveness to changes by using virtual files to interact with cppcheck.<br/>
     ]]>
   </change-notes>
 
