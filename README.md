@@ -4,6 +4,8 @@
 - Highlights lines and displays `cppcheck` error messages.
 - Supports passing options to `cppcheck`.
 
+This project is supported with a free open source license of CLion from [JetBrains](https://www.jetbrains.com/?from=clion-cppcheck).
+
 ## Installation
 
 See 
