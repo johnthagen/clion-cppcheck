@@ -183,11 +183,11 @@ public class CppcheckInspection extends LocalInspectionTool {
     }
 
     if (output.isTimeout()) {
-      throw new ExecutionException(command + " has timed out");
+      throw new ExecutionException("cppcheck error: timeout: " + cmd.getCommandLineString());
     }
 
     if (output.getExitCode() != 0) {
-      throw new ExecutionException(command + " has finished with exit code " + output.getExitCode());
+      throw new ExecutionException("cppcheck error : exitcode-" + output.getExitCode() + " : " + cmd.getCommandLineString());
     }
 
     return output.getStderr();

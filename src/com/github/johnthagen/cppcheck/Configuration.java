@@ -24,7 +24,7 @@ public class Configuration implements Configurable {
   static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
   static final String CONFIGURATION_KEY_CPPCHECK_OPTIONS = "cppcheckOptions";
 
-  private static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++";
+  private static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++ --template=\"[{file}:{line}]: ({severity}) {message}\"";
 
   @Nls
   @Override
