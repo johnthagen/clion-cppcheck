@@ -74,13 +74,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <localInspection implementationClass="com.github.johnthagen.cppcheck.CppcheckInspection"
-                     displayName="cppcheck inspections"
+                     displayName="CppCheck Inspections"
                      groupName="cppcheck"
                      id="CppcheckInspection"
                      level="WARNING"
                      enabledByDefault="true"/>
     <applicationConfigurable instance="com.github.johnthagen.cppcheck.Configuration"
-                             displayName="cppcheck configuration"/>
+                             displayName="CppCheck Configuration"/>
   </extensions>
 
   <actions>

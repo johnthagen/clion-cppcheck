@@ -17,14 +17,15 @@ public class Configuration implements Configurable {
   private static final String CPPCHECK_NOTE =
     "Note: C++ projects should leave --language=c++ appended to the cppcheck options to avoid some " +
     "false positives in header files due to the fact that cppcheck implicitly defaults to " +
-    "setting --language to \"c\" for .h files.";
+    "setting --language to \"c\" for .h files.\n\n" +
+    "You should not include any --template={} in the options.";
   private CppcheckConfigurationModifiedListener
     listener = new CppcheckConfigurationModifiedListener(this);
 
   static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
   static final String CONFIGURATION_KEY_CPPCHECK_OPTIONS = "cppcheckOptions";
 
-  private static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++ --template=\"[{file}:{line}]: ({severity}) {message}\"";
+  private static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++";
 
   @Nls
   @Override
@@ -46,8 +47,8 @@ public class Configuration implements Configurable {
     VerticalLayout verticalLayout = new VerticalLayout(1, 2);
     jPanel.setLayout(verticalLayout);
 
-    cppcheckFilePicker = new JFilePicker("cppcheck path:", "...");
-    JLabel optionFieldLabel = new JLabel("cppcheck options (default: " + defaultOptions + "):");
+    cppcheckFilePicker = new JFilePicker("CppCheck Path:", "...");
+    JLabel optionFieldLabel = new JLabel("CppCheck Options (Default: " + defaultOptions + "):");
     cppcheckOptionsField = new JTextField(defaultOptions, 38);
 
     // The first time a user installs the plugin, save the default options in their properties.

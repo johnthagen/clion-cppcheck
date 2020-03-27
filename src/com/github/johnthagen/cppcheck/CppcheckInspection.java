@@ -168,10 +168,17 @@ public class CppcheckInspection extends LocalInspectionTool {
   private static String executeCommandOnFile(@NotNull final String command,
                                              @NotNull final String options,
                                              @NotNull final String filePath) throws ExecutionException {
+
+    if (options.contains("--template")) {
+      throw new ExecutionException("CppCheck Error: cppcheck options contains --template field. Please remove this, the plugin defines its own.");
+    }
+
     GeneralCommandLine cmd = new GeneralCommandLine()
       .withExePath(command)
       .withParameters(ParametersListUtil.parse(options))
+      .withParameters(ParametersListUtil.parse("--template=\"[{file}:{line}]: ({severity}) {message}\""))
       .withParameters("\"" + filePath + "\"");
+
     CapturingProcessHandler processHandler = new CapturingProcessHandler(cmd);
     ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
     ProcessOutput output = processHandler.runProcessWithProgressIndicator(
@@ -183,11 +190,11 @@ public class CppcheckInspection extends LocalInspectionTool {
     }
 
     if (output.isTimeout()) {
-      throw new ExecutionException("cppcheck error: timeout: " + cmd.getCommandLineString());
+      throw new ExecutionException("CppCheck Error: Timeout: " + cmd.getCommandLineString());
     }
 
     if (output.getExitCode() != 0) {
-      throw new ExecutionException("cppcheck error : exitcode-" + output.getExitCode() + " : " + cmd.getCommandLineString());
+      throw new ExecutionException("CppCheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
     }
 
     return output.getStderr();
