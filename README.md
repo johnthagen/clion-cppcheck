@@ -9,7 +9,7 @@ This project is supported with a free open source license of CLion from [JetBrai
 ## Installation
 
 See 
-[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/installing-updating-and-uninstalling-repository-plugins.html)
+[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/managing-plugins.html)
 
 - [`cppcheck` in JetBrains Plugin Repository][cppcheck_plugin]
 
