@@ -47,8 +47,8 @@ public class Configuration implements Configurable {
     VerticalLayout verticalLayout = new VerticalLayout(1, 2);
     jPanel.setLayout(verticalLayout);
 
-    cppcheckFilePicker = new JFilePicker("CppCheck Path:", "...");
-    JLabel optionFieldLabel = new JLabel("CppCheck Options (Default: " + defaultOptions + "):");
+    cppcheckFilePicker = new JFilePicker("Cppcheck Path:", "...");
+    JLabel optionFieldLabel = new JLabel("Cppcheck Options (Default: " + defaultOptions + "):");
     cppcheckOptionsField = new JTextField(defaultOptions, 38);
 
     // The first time a user installs the plugin, save the default options in their properties.

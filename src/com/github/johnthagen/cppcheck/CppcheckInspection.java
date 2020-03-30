@@ -170,7 +170,7 @@ public class CppcheckInspection extends LocalInspectionTool {
                                              @NotNull final String filePath) throws ExecutionException {
 
     if (options.contains("--template")) {
-      throw new ExecutionException("CppCheck Error: cppcheck options contains --template field. Please remove this, the plugin defines its own.");
+      throw new ExecutionException("Cppcheck Error: cppcheck options contains --template field. Please remove this, the plugin defines its own.");
     }
 
     GeneralCommandLine cmd = new GeneralCommandLine()
@@ -190,11 +190,11 @@ public class CppcheckInspection extends LocalInspectionTool {
     }
 
     if (output.isTimeout()) {
-      throw new ExecutionException("CppCheck Error: Timeout: " + cmd.getCommandLineString());
+      throw new ExecutionException("Cppcheck Error: Timeout: " + cmd.getCommandLineString());
     }
 
     if (output.getExitCode() != 0) {
-      throw new ExecutionException("CppCheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
+      throw new ExecutionException("Cppcheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
     }
 
     return output.getStderr();

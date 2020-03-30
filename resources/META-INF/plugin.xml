@@ -60,7 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.3.0 Support CppCheck >1.89, which use the --template={} option. (Contribution by @SJ-Innovation) <br/>
+      1.3.0 Support Cppcheck >1.89, which use the --template={} option. (Contribution by @SJ-Innovation) <br/>
     ]]>
   </change-notes>
 
@@ -74,13 +74,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <localInspection implementationClass="com.github.johnthagen.cppcheck.CppcheckInspection"
-                     displayName="CppCheck Inspections"
+                     displayName="Cppcheck Inspections"
                      groupName="cppcheck"
                      id="CppcheckInspection"
                      level="WARNING"
                      enabledByDefault="true"/>
     <applicationConfigurable instance="com.github.johnthagen.cppcheck.Configuration"
-                             displayName="CppCheck Configuration"/>
+                             displayName="Cppcheck Configuration"/>
   </extensions>
 
   <actions>
