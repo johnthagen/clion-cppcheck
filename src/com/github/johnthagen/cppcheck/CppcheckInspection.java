@@ -114,7 +114,7 @@ public class CppcheckInspection extends LocalInspectionTool {
     // Example output line:
     // [C:\Users\John Hagen\ClionProjects\test\main.cpp:12]: (style) Variable 'a' is not assigned a value.
     // [main.cpp:12] -> [main.cpp:14]: (performance) Variable 'a' is reassigned a value before the old one has been used.
-    Pattern pattern = Pattern.compile("^\\[(.+?):(\\d+)\\](?:\\s+->\\s+\\[.+\\])?:\\s+\\((\\w+)\\)\\s+(.+)");
+    Pattern pattern = Pattern.compile("^\\[(.+?):(\\d+)](?:\\s+->\\s+\\[.+])?:\\s+\\((\\w+)\\)\\s+(.+)");
 
     String line;
     while (scanner.hasNext()) {

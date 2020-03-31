@@ -1,7 +1,6 @@
 package com.github.johnthagen.cppcheck;
 
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.components.panels.VerticalLayout;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +18,7 @@ public class Configuration implements Configurable {
     "false positives in header files due to the fact that cppcheck implicitly defaults to " +
     "setting --language to \"c\" for .h files.\n\n" +
     "You should not include any --template={} in the options.";
-  private CppcheckConfigurationModifiedListener
+  private final CppcheckConfigurationModifiedListener
     listener = new CppcheckConfigurationModifiedListener(this);
 
   static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
