@@ -6,12 +6,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class JFilePicker extends JPanel {
-  private JTextField textField;
-  private JFileChooser fileChooser;
+  private final JTextField textField;
+  private final JFileChooser fileChooser;
 
   JFilePicker(String textFieldLabel, String buttonLabel) {
     fileChooser = new JFileChooser();
@@ -23,12 +21,7 @@ class JFilePicker extends JPanel {
     textField = new JTextField(30);
     JButton button = new JButton(buttonLabel);
 
-    button.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-        buttonActionPerformed(evt);
-      }
-    });
+    button.addActionListener(evt -> buttonActionPerformed());
 
     add(label);
     add(textField);
@@ -39,7 +32,7 @@ class JFilePicker extends JPanel {
     return textField;
   }
 
-  private void buttonActionPerformed(ActionEvent evt) {
+  private void buttonActionPerformed() {
     if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
     }
