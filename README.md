@@ -44,6 +44,10 @@ false positives for C++ projects.  C++ projects should append `--language=c++` t
 
 ## Releases
 
+### 1.4.0 - 2020-04-02
+
+Support Cppcheck MISRA addon. (Contribution by @SJ-Innovation)
+
 ### 1.3.0 - 2020-03-28
 
 Support Cppcheck >1.89. (Contribution by @SJ-Innovation)
