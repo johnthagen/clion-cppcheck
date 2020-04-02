@@ -175,7 +175,7 @@ public class CppcheckInspection extends LocalInspectionTool {
                                              @NotNull final String filePath) throws ExecutionException {
 
     if (options.contains("--template")) {
-      throw new ExecutionException("Cppcheck Error: cppcheck options contains --template field. Please remove this, the plugin defines its own.");
+      throw new ExecutionException("Cppcheck Error: Cppcheck options contains --template field. Please remove this, the plugin defines its own.");
     }
 
     GeneralCommandLine cmd = new GeneralCommandLine()
@@ -210,7 +210,7 @@ public class CppcheckInspection extends LocalInspectionTool {
     if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isBlank()){
       if (output.getStdout().contains("Bailing out from checking")){
         // MISRA Mode and something went wrong with the misra addon
-        throw new ExecutionException("CppCheck MISRA Bail : " + cmd.getCommandLineString() + "\n StdOut : \n" + output.getStdout() + "\n StdErr : "+output.getStderr());
+        throw new ExecutionException("Cppcheck MISRA Bail : " + cmd.getCommandLineString() + "\n StdOut : \n" + output.getStdout() + "\n StdErr : "+output.getStderr());
       }
     }
 
