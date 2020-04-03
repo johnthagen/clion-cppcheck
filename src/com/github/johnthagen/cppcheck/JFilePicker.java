@@ -8,35 +8,35 @@ import javax.swing.JButton;
 import java.awt.FlowLayout;
 
 class JFilePicker extends JPanel {
-  private final JTextField textField;
-  private final JFileChooser fileChooser;
+    private final JTextField textField;
+    private final JFileChooser fileChooser;
 
-  JFilePicker(String textFieldLabel, String buttonLabel) {
-    fileChooser = new JFileChooser();
+    JFilePicker(String textFieldLabel, String buttonLabel) {
+        fileChooser = new JFileChooser();
 
-    setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-    JLabel label = new JLabel(textFieldLabel);
+        JLabel label = new JLabel(textFieldLabel);
 
-    textField = new JTextField(30);
-    JButton button = new JButton(buttonLabel);
+        textField = new JTextField(30);
+        JButton button = new JButton(buttonLabel);
 
-    button.addActionListener(evt -> buttonActionPerformed());
+        button.addActionListener(evt -> buttonActionPerformed());
 
-    add(label);
-    add(textField);
-    add(button);
-  }
-
-  JTextField getTextField() {
-    return textField;
-  }
-
-  private void buttonActionPerformed() {
-    if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-      textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+        add(label);
+        add(textField);
+        add(button);
     }
-  }
+
+    JTextField getTextField() {
+        return textField;
+    }
+
+    private void buttonActionPerformed() {
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+        }
+    }
 
 
 }
