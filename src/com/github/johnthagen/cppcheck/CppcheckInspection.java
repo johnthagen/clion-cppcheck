@@ -45,6 +45,11 @@ public class CppcheckInspection extends LocalInspectionTool {
     String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
     String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
+    String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
+    if(!cppcheckMisraPath.isBlank()){
+      cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
+    }
+
     VirtualFile vFile = file.getVirtualFile();
     if (vFile == null || !isCFamilyFile(vFile)) {
       return ProblemDescriptor.EMPTY_ARRAY;
@@ -170,14 +175,19 @@ public class CppcheckInspection extends LocalInspectionTool {
                                              @NotNull final String filePath) throws ExecutionException {
 
     if (options.contains("--template")) {
-      throw new ExecutionException("Cppcheck Error: cppcheck options contains --template field. Please remove this, the plugin defines its own.");
+      throw new ExecutionException("Cppcheck Error: Cppcheck options contains --template field. Please remove this, the plugin defines its own.");
     }
 
     GeneralCommandLine cmd = new GeneralCommandLine()
       .withExePath(command)
+      .withParameters(ParametersListUtil.parse("--template=\"[{file}:{line}]: ({severity}) {id}: {message}\""))
       .withParameters(ParametersListUtil.parse(options))
-      .withParameters(ParametersListUtil.parse("--template=\"[{file}:{line}]: ({severity}) {message}\""))
-      .withParameters("\"" + filePath + "\"");
+      .withParameters(ParametersListUtil.parse(filePath));
+
+    // Need to be able to get python from the system env
+    if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isBlank()){
+      cmd.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.SYSTEM);
+    }
 
     CapturingProcessHandler processHandler = new CapturingProcessHandler(cmd);
     ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
@@ -195,6 +205,13 @@ public class CppcheckInspection extends LocalInspectionTool {
 
     if (output.getExitCode() != 0) {
       throw new ExecutionException("Cppcheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
+    }
+
+    if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isBlank()){
+      if (output.getStdout().contains("Bailing out from checking")){
+        // MISRA Mode and something went wrong with the misra addon
+        throw new ExecutionException("Cppcheck MISRA Bail : " + cmd.getCommandLineString() + "\n StdOut : \n" + output.getStdout() + "\n StdErr : "+output.getStderr());
+      }
     }
 
     return output.getStderr();
