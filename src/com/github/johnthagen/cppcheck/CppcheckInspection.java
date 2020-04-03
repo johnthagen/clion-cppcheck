@@ -46,7 +46,7 @@ public class CppcheckInspection extends LocalInspectionTool {
     String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
     String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
-    if(!cppcheckMisraPath.isBlank()){
+    if(!cppcheckMisraPath.isEmpty()){
       cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
     }
 
@@ -185,7 +185,7 @@ public class CppcheckInspection extends LocalInspectionTool {
       .withParameters(ParametersListUtil.parse(filePath));
 
     // Need to be able to get python from the system env
-    if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isBlank()){
+    if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isEmpty()){
       cmd.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.SYSTEM);
     }
 
@@ -207,7 +207,7 @@ public class CppcheckInspection extends LocalInspectionTool {
       throw new ExecutionException("Cppcheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
     }
 
-    if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isBlank()){
+    if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isEmpty()){
       if (output.getStdout().contains("Bailing out from checking")){
         // MISRA Mode and something went wrong with the misra addon
         throw new ExecutionException("Cppcheck MISRA Bail : " + cmd.getCommandLineString() + "\n StdOut : \n" + output.getStdout() + "\n StdErr : "+output.getStderr());
