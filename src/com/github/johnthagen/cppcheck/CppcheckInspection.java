@@ -46,7 +46,7 @@ public class CppcheckInspection extends LocalInspectionTool {
         String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
         String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
-        if (!cppcheckMisraPath.isEmpty()) {
+        if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
         }
 
