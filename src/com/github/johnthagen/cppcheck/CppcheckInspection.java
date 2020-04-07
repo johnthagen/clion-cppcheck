@@ -71,7 +71,7 @@ public class CppcheckInspection extends LocalInspectionTool {
             tempFile = FileUtil.createTempFile("", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             String cppcheckOutput =
-                    executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile), tempFile.getAbsolutePath());
+                    executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile), tempFile.getAbsolutePath(), cppcheckMisraPath);
 
             if (!cppcheckOutput.isEmpty()) {
                 List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput, tempFile.getName());
@@ -172,7 +172,8 @@ public class CppcheckInspection extends LocalInspectionTool {
 
     private static String executeCommandOnFile(@NotNull final String command,
                                                @NotNull final String options,
-                                               @NotNull final String filePath) throws ExecutionException {
+                                               @NotNull final String filePath,
+                                               final String cppcheckMisraPath) throws ExecutionException {
 
         if (options.contains("--template")) {
             throw new ExecutionException("Cppcheck Error: Cppcheck options contains --template field. Please remove this, the plugin defines its own.");
@@ -185,7 +186,7 @@ public class CppcheckInspection extends LocalInspectionTool {
                 .withParameters(ParametersListUtil.parse(filePath));
 
         // Need to be able to get python from the system env
-        if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isEmpty()) {
+        if (cppcheckMisraPath!= null && !cppcheckMisraPath.isEmpty()) {
             cmd.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.SYSTEM);
         }
 
@@ -207,7 +208,7 @@ public class CppcheckInspection extends LocalInspectionTool {
             throw new ExecutionException("Cppcheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
         }
 
-        if (!Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH).isEmpty()) {
+        if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             if (output.getStdout().contains("Bailing out from checking")) {
                 // MISRA Mode and something went wrong with the misra addon
                 throw new ExecutionException("Cppcheck MISRA Bail : " + cmd.getCommandLineString() + "\n StdOut : \n" + output.getStdout() + "\n StdErr : " + output.getStderr());
