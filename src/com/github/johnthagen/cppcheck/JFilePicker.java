@@ -37,6 +37,4 @@ class JFilePicker extends JPanel {
             textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
         }
     }
-
-
 }

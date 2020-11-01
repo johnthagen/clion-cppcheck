@@ -42,26 +42,26 @@ public class CppcheckInspection extends LocalInspectionTool {
     public ProblemDescriptor[] checkFile(@NotNull PsiFile file,
                                          @NotNull InspectionManager manager,
                                          boolean isOnTheFly) {
-        String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
+        final String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
         String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
-        String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
+        final String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
         }
 
-        VirtualFile vFile = file.getVirtualFile();
+        final VirtualFile vFile = file.getVirtualFile();
         if (vFile == null || !isCFamilyFile(vFile)) {
             return ProblemDescriptor.EMPTY_ARRAY;
         }
 
         if (cppcheckPath == null || cppcheckPath.isEmpty()) {
-            StatusBar.Info.set("[!] Error: Please set path of cppcheck in File->Settings->Other Settings",
+            StatusBar.Info.set("[!] Error: Please set path of cppcheck in File->Settings->Cppcheck Configuration",
                     file.getProject());
             return ProblemDescriptor.EMPTY_ARRAY;
         }
 
-        Document document = FileDocumentManager.getInstance().getDocument(vFile);
+        final Document document = FileDocumentManager.getInstance().getDocument(vFile);
         if (document == null || document.getLineCount() == 0) {
             return ProblemDescriptor.EMPTY_ARRAY;
         }
@@ -71,14 +71,16 @@ public class CppcheckInspection extends LocalInspectionTool {
             tempFile = FileUtil.createTempFile("", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             String cppcheckOutput =
-                    executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile), tempFile.getAbsolutePath(), cppcheckMisraPath);
+                    executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
+                            tempFile.getAbsolutePath(), cppcheckMisraPath);
 
             if (!cppcheckOutput.isEmpty()) {
-                List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput, tempFile.getName());
+                List<ProblemDescriptor> descriptors = parseOutput(file, manager, document, cppcheckOutput,
+                        tempFile.getName());
                 return descriptors.toArray(new ProblemDescriptor[0]);
             }
         } catch (ExecutionException | IOException ex) {
-            Notifications.Bus.notify(new Notification("cppcheck",
+            Notifications.Bus.notify(new Notification("Cppcheck",
                     "Error",
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.INFORMATION));
@@ -94,10 +96,14 @@ public class CppcheckInspection extends LocalInspectionTool {
 
     @NotNull
     private static String prependIncludeDir(@NotNull String cppcheckOptions, @NotNull VirtualFile vFile) {
-        VirtualFile dir = vFile.getParent();
-        if (dir == null) return cppcheckOptions;
-        String path = dir.getCanonicalPath();
-        if (path == null) return cppcheckOptions;
+        final VirtualFile dir = vFile.getParent();
+        if (dir == null) {
+            return cppcheckOptions;
+        }
+        final String path = dir.getCanonicalPath();
+        if (path == null) {
+            return cppcheckOptions;
+        }
         return String.format("-I\"%s\" %s", path, cppcheckOptions);
     }
 
@@ -160,7 +166,7 @@ public class CppcheckInspection extends LocalInspectionTool {
             ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
                     psiFile,
                     TextRange.create(lineStartOffset, lintEndOffset),
-                    "cppcheck: (" + severity + ") " + errorMessage,
+                    "Cppcheck: (" + severity + ") " + errorMessage,
                     severityToHighlightType(severity),
                     true);
             descriptors.add(problemDescriptor);
@@ -176,17 +182,19 @@ public class CppcheckInspection extends LocalInspectionTool {
                                                final String cppcheckMisraPath) throws ExecutionException {
 
         if (options.contains("--template")) {
-            throw new ExecutionException("Cppcheck Error: Cppcheck options contains --template field. Please remove this, the plugin defines its own.");
+            throw new ExecutionException("Cppcheck Error: Cppcheck options contains --template field. " +
+                    "Please remove this, the plugin defines its own.");
         }
 
         GeneralCommandLine cmd = new GeneralCommandLine()
                 .withExePath(command)
-                .withParameters(ParametersListUtil.parse("--template=\"[{file}:{line}]: ({severity}) {id}: {message}\""))
+                .withParameters(ParametersListUtil.parse(
+                        "--template=\"[{file}:{line}]: ({severity}) {id}: {message}\""))
                 .withParameters(ParametersListUtil.parse(options))
                 .withParameters(ParametersListUtil.parse(filePath));
 
         // Need to be able to get python from the system env
-        if (cppcheckMisraPath!= null && !cppcheckMisraPath.isEmpty()) {
+        if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             cmd.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.SYSTEM);
         }
 
@@ -205,13 +213,15 @@ public class CppcheckInspection extends LocalInspectionTool {
         }
 
         if (output.getExitCode() != 0) {
-            throw new ExecutionException("Cppcheck Error : Exit Code - " + output.getExitCode() + " : " + cmd.getCommandLineString());
+            throw new ExecutionException("Cppcheck Error: Exit Code - " + output.getExitCode() + " : " +
+                    cmd.getCommandLineString());
         }
 
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             if (output.getStdout().contains("Bailing out from checking")) {
                 // MISRA Mode and something went wrong with the misra addon
-                throw new ExecutionException("Cppcheck MISRA Bail : " + cmd.getCommandLineString() + "\n StdOut : \n" + output.getStdout() + "\n StdErr : " + output.getStderr());
+                throw new ExecutionException("Cppcheck MISRA Bail: " + cmd.getCommandLineString() +
+                        "\n StdOut: \n" + output.getStdout() + "\n StdErr: " + output.getStderr());
             }
         }
 

@@ -18,9 +18,12 @@ public class Configuration implements Configurable {
             "Note: C++ projects should leave --language=c++ appended to the Cppcheck options to avoid some " +
                     "false positives in header files due to the fact that Cppcheck implicitly defaults to " +
                     "setting --language to \"c\" for .h files.\n\n" +
-                    "You should not include any --template={} in the options.";
+                    "You should not include any --template={} in the options.\n\n" +
+                    "Due to how the Cppcheck plugin executes on one file at a time, `--enable=unusedFunction`" +
+                    "is not supported.";
     private static final String CPPCHECK_MISRA_NOTE =
-            "Using MISRA requires a rule texts file, which can be obtained from MISRA themselves (Their license prohibits distributing the rules texts)\n\n" +
+            "Using MISRA requires a rule texts file, which can be obtained from MISRA themselves " +
+                    "(Their license prohibits distributing the rules texts)\n\n" +
                     "Create a .json file near your Cppcheck installation and point to it here\n" +
                     "Within that file, create something like this:\n" +
                     "{\n" +
