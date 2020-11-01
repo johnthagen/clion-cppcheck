@@ -55,7 +55,7 @@ Deployment.
 
 ## Releases
 
-### Unreleased
+### 1.5.0 - 2020-11-01
 
 - Correctly specify minimum supported CLion version.
 - Support showing inconclusive annotations in the IDE. (Contribution by @firewave)
