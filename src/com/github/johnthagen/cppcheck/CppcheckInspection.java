@@ -169,6 +169,7 @@ public class CppcheckInspection extends LocalInspectionTool {
     }
 
     private static final int TIMEOUT_MS = 60 * 1000;
+    private static final String INCONCLUSIVE_TEXT = ":inconclusive";
 
     private static String executeCommandOnFile(@NotNull final String command,
                                                @NotNull final String options,
@@ -181,7 +182,7 @@ public class CppcheckInspection extends LocalInspectionTool {
 
         GeneralCommandLine cmd = new GeneralCommandLine()
                 .withExePath(command)
-                .withParameters(ParametersListUtil.parse("--template=\"[{file}:{line}]: ({severity}) {id}: {message}\""))
+                .withParameters(ParametersListUtil.parse("--template=\"[{file}:{line}]: ({severity}{inconclusive:" + INCONCLUSIVE_TEXT + ") {id}: {message}\""))
                 .withParameters(ParametersListUtil.parse(options))
                 .withParameters(ParametersListUtil.parse(filePath));
 
@@ -237,7 +238,10 @@ public class CppcheckInspection extends LocalInspectionTool {
         }
     }
 
-    private static ProblemHighlightType severityToHighlightType(@NotNull final String severity) {
+    private static ProblemHighlightType severityToHighlightType(@NotNull String severity) {
+        // remove potential inconclusive postfix
+        severity = severity.replace(INCONCLUSIVE_TEXT, "");
+
         switch (severity) {
             case "error":
                 return ProblemHighlightType.GENERIC_ERROR;
