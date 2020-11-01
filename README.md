@@ -40,7 +40,7 @@ plugin, and as a result may have false positives.
 
 When run on header files directly, `cppcheck` defaults to C as the language, which will generate
 false positives for C++ projects.  C++ projects should append `--language=c++` to the
-`cppcheck` options.
+`cppcheck` options. In addition, `--enable=unusedFunction` is not supported and will generate false positives.
 
 ## Releases
 
