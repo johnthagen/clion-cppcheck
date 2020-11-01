@@ -4,7 +4,8 @@
 - Highlights lines and displays `cppcheck` error messages.
 - Supports passing options to `cppcheck`.
 
-This project is supported with a free open source license of CLion from [JetBrains](https://www.jetbrains.com/?from=clion-cppcheck).
+This project is supported with a free open source license of CLion from 
+[JetBrains](https://www.jetbrains.com/?from=clion-cppcheck).
 
 ## Installation
 
@@ -42,7 +43,21 @@ When run on header files directly, `cppcheck` defaults to C as the language, whi
 false positives for C++ projects.  C++ projects should append `--language=c++` to the
 `cppcheck` options. In addition, `--enable=unusedFunction` is not supported and will generate false positives.
 
+## Development
+
+To run the plugin from source, open this project in IntelliJ and create a new "Plugin" run configuration. Running or
+debugging this run configuration will launch a new IntelliJ process with the plugin loaded into it. 
+
+See this page for details: https://jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html
+
+To build the plugin for deployment to the https://plugins.jetbrains.com/, select Build | Prepare Plugin Module For
+Deployment.
+
 ## Releases
+
+### Unreleased
+
+- Correctly specify minimum supported CLion version.
 
 ### 1.4.2 - 2020-04-06
 

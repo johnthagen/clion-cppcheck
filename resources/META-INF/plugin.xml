@@ -60,12 +60,12 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.4.2 Fix NullPointerException (Contribution by @firewave) <br/>
+      1.4.3 Correctly specify minimum supported CLion version. <br/>
     ]]>
   </change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="143.0"/>
+  <idea-version since-build="163.0"/>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
