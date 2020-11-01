@@ -60,7 +60,8 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.4.3 Correctly specify minimum supported CLion version. <br/>
+      1.4.3 Correctly specify minimum supported CLion version.<br/>
+      Support annotating inconclusive results in the IDE. (Contribution by @firewave)<br/>
     ]]>
   </change-notes>
 
