@@ -44,6 +44,10 @@ false positives for C++ projects.  C++ projects should append `--language=c++` t
 
 ## Releases
 
+### Unreleased
+
+- Correctly specify minimum supported CLion version.
+
 ### 1.4.2 - 2020-04-06
 
 Fix NullPointerException. (Contribution by @firewave)
