@@ -125,7 +125,10 @@ public class CppcheckInspection extends LocalInspectionTool {
         // Example output line:
         // [C:\Users\John Hagen\ClionProjects\test\main.cpp:12]: (style) Variable 'a' is not assigned a value.
         // [main.cpp:12] -> [main.cpp:14]: (performance) Variable 'a' is reassigned a value before the old one has been used.
-        Pattern pattern = Pattern.compile("^\\[(.+?):(\\d+)](?:\\s+->\\s+\\[.+])?:\\s+\\((\\w+)\\)\\s+(.+)");
+        // One line:
+        //  [C:\Users\User\AppData\Local\Temp\___1main.cpp:14]: (warning:inconclusive) accessMoved: Access of moved variable 'a'.
+        //  [C:\Users\User\AppData\Local\Temp\___1main.cpp:14]: (style) unreadVariable: Variable 'name' is assigned a value that is never used.
+        Pattern pattern = Pattern.compile("^\\[(.+?):(\\d+)](?:\\s+->\\s+\\[.+])?:\\s+\\((\\w+:?\\w+)\\)\\s+(.+)");
 
         String line;
         while (scanner.hasNext()) {
@@ -167,7 +170,7 @@ public class CppcheckInspection extends LocalInspectionTool {
                     psiFile,
                     TextRange.create(lineStartOffset, lintEndOffset),
                     "Cppcheck: (" + severity + ") " + errorMessage,
-                    severityToHighlightType(severity),
+                    severityToHighlightType(severity.replace(INCONCLUSIVE_TEXT, "")),
                     true);
             descriptors.add(problemDescriptor);
         }
@@ -175,6 +178,7 @@ public class CppcheckInspection extends LocalInspectionTool {
     }
 
     private static final int TIMEOUT_MS = 60 * 1000;
+    private static final String INCONCLUSIVE_TEXT = ":inconclusive";
 
     private static String executeCommandOnFile(@NotNull final String command,
                                                @NotNull final String options,
@@ -189,7 +193,8 @@ public class CppcheckInspection extends LocalInspectionTool {
         GeneralCommandLine cmd = new GeneralCommandLine()
                 .withExePath(command)
                 .withParameters(ParametersListUtil.parse(
-                        "--template=\"[{file}:{line}]: ({severity}) {id}: {message}\""))
+                        "--template=\"[{file}:{line}]: ({severity}{inconclusive:" + INCONCLUSIVE_TEXT +
+                                "}) {id}: {message}\""))
                 .withParameters(ParametersListUtil.parse(options))
                 .withParameters(ParametersListUtil.parse(filePath));
 
