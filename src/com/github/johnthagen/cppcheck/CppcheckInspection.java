@@ -79,11 +79,11 @@ public class CppcheckInspection extends LocalInspectionTool {
                         tempFile.getName());
                 return descriptors.toArray(new ProblemDescriptor[0]);
             }
-        } catch (ExecutionException | IOException ex) {
+        } catch (ExecutionException | CppcheckError | IOException ex) {
             Notifications.Bus.notify(new Notification("Cppcheck",
-                    "Error",
+                    "Cppcheck execution failed.",
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
-                    NotificationType.INFORMATION));
+                    NotificationType.ERROR));
             ex.printStackTrace();
         } finally {
             if (tempFile != null) {
@@ -183,10 +183,10 @@ public class CppcheckInspection extends LocalInspectionTool {
     private static String executeCommandOnFile(@NotNull final String command,
                                                @NotNull final String options,
                                                @NotNull final String filePath,
-                                               final String cppcheckMisraPath) throws ExecutionException {
+                                               final String cppcheckMisraPath) throws CppcheckError, ExecutionException {
 
         if (options.contains("--template")) {
-            throw new ExecutionException("Cppcheck Error: Cppcheck options contains --template field. " +
+            throw new CppcheckError("Cppcheck options contain --template field. " +
                     "Please remove this, the plugin defines its own.");
         }
 
@@ -214,19 +214,23 @@ public class CppcheckInspection extends LocalInspectionTool {
         }
 
         if (output.isTimeout()) {
-            throw new ExecutionException("Cppcheck Error: Timeout: " + cmd.getCommandLineString());
+            throw new CppcheckError("Timeout\n"
+                    + cmd.getCommandLineString());
         }
 
         if (output.getExitCode() != 0) {
-            throw new ExecutionException("Cppcheck Error: Exit Code - " + output.getExitCode() + " : " +
+            throw new CppcheckError("Exit Code " + output.getExitCode() + "\n" +
+                    "stdout: " + output.getStdout() + "\n" +
                     cmd.getCommandLineString());
         }
 
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             if (output.getStdout().contains("Bailing out from checking")) {
                 // MISRA Mode and something went wrong with the misra addon
-                throw new ExecutionException("Cppcheck MISRA Bail: " + cmd.getCommandLineString() +
-                        "\n StdOut: \n" + output.getStdout() + "\n StdErr: " + output.getStderr());
+                throw new CppcheckError("MISRA Bail\n" +
+                        cmd.getCommandLineString() + "\n" +
+                        "stdout: " + output.getStdout() + "\n"+
+                        "stderr: " + output.getStderr());
             }
         }
 

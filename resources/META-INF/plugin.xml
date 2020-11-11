@@ -61,7 +61,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.5.1 <br/>
+      1.5.1 Improved reporting of execution failures. (Contribution by @firewave)<br/>
     ]]>
   </change-notes>
 
