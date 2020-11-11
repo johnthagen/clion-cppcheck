@@ -55,6 +55,10 @@ Deployment.
 
 ## Releases
 
+### 1.5.1 - XXXX-XX-XX
+
+Improved reporting of execution failures. (Contribution by @firewave)
+
 ### 1.5.0 - 2020-11-01
 
 - Correctly specify minimum supported CLion version.
