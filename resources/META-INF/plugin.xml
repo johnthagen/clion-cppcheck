@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.5.1</version>
+  <version>1.6.0</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -61,7 +61,6 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      1.5.1 Improved reporting of execution failures. (Contribution by @firewave)<br/>
     ]]>
   </change-notes>
 

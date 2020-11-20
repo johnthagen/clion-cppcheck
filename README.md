@@ -55,6 +55,8 @@ Deployment.
 
 ## Releases
 
+### 1.6.0 - XXXX-XX-XX
+
 ### 1.5.1 - 2020-11-12
 
 Improved reporting of execution failures. (Contribution by @firewave)
