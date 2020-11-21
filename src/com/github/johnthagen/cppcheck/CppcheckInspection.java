@@ -13,6 +13,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
@@ -55,7 +56,7 @@ public class CppcheckInspection extends LocalInspectionTool {
 
         File tempFile = null;
         try {
-            tempFile = FileUtil.createTempFile("", vFile.getName(), true);
+            tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
                     CppCheckInspectionImpl.executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),

@@ -64,6 +64,7 @@
       - Parse --xml output instead of text output. (Contribution by @firewave)<br/>
       - Fixed scanning of files with whitespaces in name. (Contribution by @firewave)
       - Only scan files which actually exist. (Contribution by @firewave)
+      - Use unique file names for temporary files used for analysis. (Contribution by @firewave)
     ]]>
   </change-notes>
 

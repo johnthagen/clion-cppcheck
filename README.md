@@ -60,6 +60,7 @@ Deployment.
 - Parse `--xml` output instead of text output. (Contribution by @firewave)
 - Fixed scanning of files with whitespaces in name. (Contribution by @firewave)
 - Only scan files which actually exist. (Contribution by @firewave)
+- Use unique file names for temporary files used for analysis. (Contribution by @firewave)
 
 ### 1.5.1 - 2020-11-12
 
