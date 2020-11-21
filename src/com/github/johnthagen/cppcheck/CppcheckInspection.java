@@ -15,7 +15,9 @@ import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -49,6 +51,7 @@ public class CppcheckInspection extends LocalInspectionTool {
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
         }
+        cppcheckOptions = String.format("%s --xml", cppcheckOptions);
 
         File tempFile = null;
         try {
@@ -58,17 +61,14 @@ public class CppcheckInspection extends LocalInspectionTool {
                     CppCheckInspectionImpl.executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
                             tempFile.getAbsolutePath(), cppcheckMisraPath);
 
-            if (!cppcheckOutput.isEmpty()) {
-                final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
-                        tempFile.getName());
-                return descriptors.toArray(new ProblemDescriptor[0]);
-            }
-        } catch (ExecutionException | CppcheckError | IOException ex) {
+            final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
+                    tempFile.getName());
+            return descriptors.toArray(new ProblemDescriptor[0]);
+        } catch (ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
             Notifications.Bus.notify(new Notification("Cppcheck",
                     "Cppcheck execution failed.",
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR));
-            ex.printStackTrace();
         } finally {
             if (tempFile != null) {
                 FileUtil.delete(tempFile);

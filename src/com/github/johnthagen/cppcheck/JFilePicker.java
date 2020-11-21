@@ -16,10 +16,10 @@ class JFilePicker extends JPanel {
 
         setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-        JLabel label = new JLabel(textFieldLabel);
+        final JLabel label = new JLabel(textFieldLabel);
 
         textField = new JTextField(30);
-        JButton button = new JButton(buttonLabel);
+        final JButton button = new JButton(buttonLabel);
 
         button.addActionListener(evt -> buttonActionPerformed());
 

@@ -18,7 +18,6 @@ public class Configuration implements Configurable {
             "Note: C++ projects should leave --language=c++ appended to the Cppcheck options to avoid some " +
                     "false positives in header files due to the fact that Cppcheck implicitly defaults to " +
                     "setting --language to \"c\" for .h files.\n\n" +
-                    "You should not include any --template={} in the options.\n\n" +
                     "Due to how the Cppcheck plugin executes on one file at a time, `--enable=unusedFunction`" +
                     "is not supported.";
     private static final String CPPCHECK_MISRA_NOTE =
@@ -55,13 +54,13 @@ public class Configuration implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        JPanel jPanel = new JPanel();
+        final JPanel jPanel = new JPanel();
 
-        VerticalLayout verticalLayout = new VerticalLayout(1, 2);
+        final VerticalLayout verticalLayout = new VerticalLayout(1, 2);
         jPanel.setLayout(verticalLayout);
 
         cppcheckFilePicker = new JFilePicker("Cppcheck Path:", "...");
-        JLabel optionFieldLabel = new JLabel("Cppcheck Options (Default: " + defaultOptions + "):");
+        final JLabel optionFieldLabel = new JLabel("Cppcheck Options (Default: " + defaultOptions + "):");
         cppcheckOptionsField = new JTextField(defaultOptions, 38);
         cppcheckMisraFilePicker = new JFilePicker("MISRA Addon JSON:", "...");
 
@@ -76,11 +75,11 @@ public class Configuration implements Configurable {
             Properties.set(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH, cppcheckMisraFilePicker.getTextField().getText());
         }
 
-        JTextArea cppcheckNoteArea = new JTextArea(CPPCHECK_NOTE, 2, 80);
+        final JTextArea cppcheckNoteArea = new JTextArea(CPPCHECK_NOTE, 2, 80);
         cppcheckNoteArea.setLineWrap(true);
         cppcheckNoteArea.setWrapStyleWord(true);
 
-        JTextArea cppcheckMisraNoteArea = new JTextArea(CPPCHECK_MISRA_NOTE, 2, 80);
+        final JTextArea cppcheckMisraNoteArea = new JTextArea(CPPCHECK_MISRA_NOTE, 2, 80);
         cppcheckMisraNoteArea.setLineWrap(true);
         cppcheckMisraNoteArea.setWrapStyleWord(true);
 
@@ -119,13 +118,13 @@ public class Configuration implements Configurable {
 
     @Override
     public void reset() {
-        String cppcheckPath = Properties.get(CONFIGURATION_KEY_CPPCHECK_PATH);
+        final String cppcheckPath = Properties.get(CONFIGURATION_KEY_CPPCHECK_PATH);
         cppcheckFilePicker.getTextField().setText(cppcheckPath);
 
-        String cppcheckOptions = Properties.get(CONFIGURATION_KEY_CPPCHECK_OPTIONS);
+        final String cppcheckOptions = Properties.get(CONFIGURATION_KEY_CPPCHECK_OPTIONS);
         cppcheckOptionsField.setText(cppcheckOptions);
 
-        String cppcheckMisraPath = Properties.get(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
+        final String cppcheckMisraPath = Properties.get(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
         cppcheckMisraFilePicker.getTextField().setText(cppcheckMisraPath);
 
         modified = false;
