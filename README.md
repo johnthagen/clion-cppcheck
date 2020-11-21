@@ -21,14 +21,14 @@ See
 2. Install the [cppcheck plugin][cppcheck_plugin] into CLion.
 3. Configure the plugin with the **absolute** path to the `cppcheck` executable into the `cppcheck path` option.
     1. Windows
-        1. File | Settings | cppcheck configuration
+        1. File | Settings | Cppcheck configuration
         2. Usually the path is `C:\Program Files (x86)\Cppcheck\cppcheck.exe`
     2. macOS: 
-        1. CLion | Preferences | cppcheck configuration
+        1. CLion | Preferences | Cppcheck configuration
         2. In a terminal run `which cppcheck` to find the path to `cppcheck`. If you installed it with 
            [Homebrew](https://brew.sh/), the path will be `/usr/local/bin/cppcheck`.
     3. Linux
-        1. File | Settings | cppcheck configuration
+        1. File | Settings | Cppcheck configuration
         2. In a terminal run `which cppcheck` to find the path to `cppcheck`. If you installed it with your
            system's package manager, it is probably located at `/usr/bin/cppcheck`. 
 
@@ -56,6 +56,8 @@ Deployment.
 ## Releases
 
 ### 1.6.0 - XXXX-XX-XX
+
+Parse `--xml` output instead of text output. (Contribution by @firewave)
 
 ### 1.5.1 - 2020-11-12
 
