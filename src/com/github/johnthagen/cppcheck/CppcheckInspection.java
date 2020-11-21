@@ -29,7 +29,7 @@ public class CppcheckInspection extends LocalInspectionTool {
                                          @NotNull InspectionManager manager,
                                          boolean isOnTheFly) {
         final VirtualFile vFile = file.getVirtualFile();
-        if (vFile == null || !isCFamilyFile(vFile)) {
+        if (vFile == null || !vFile.isInLocalFileSystem() || !isCFamilyFile(vFile)) {
             return ProblemDescriptor.EMPTY_ARRAY;
         }
 
