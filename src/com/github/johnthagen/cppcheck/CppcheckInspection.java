@@ -26,12 +26,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CppcheckInspection extends LocalInspectionTool {
+class CppcheckInspection extends LocalInspectionTool {
     @Nullable
     @Override
-    public ProblemDescriptor[] checkFile(@NotNull PsiFile file,
-                                         @NotNull InspectionManager manager,
-                                         boolean isOnTheFly) {
+    public ProblemDescriptor[] checkFile(@NotNull final PsiFile file,
+                                         @NotNull final InspectionManager manager,
+                                         final boolean isOnTheFly) {
         final VirtualFile vFile = file.getVirtualFile();
         if (vFile == null || !vFile.isInLocalFileSystem() || !isCFamilyFile(vFile)) {
             return ProblemDescriptor.EMPTY_ARRAY;
@@ -68,7 +68,7 @@ public class CppcheckInspection extends LocalInspectionTool {
             final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
             return descriptors.toArray(new ProblemDescriptor[0]);
-        } catch (ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
+        } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
             Notifications.Bus.notify(new Notification("Cppcheck",
                     "Cppcheck execution failed.",
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
@@ -83,7 +83,7 @@ public class CppcheckInspection extends LocalInspectionTool {
     }
 
     @NotNull
-    private static String prependIncludeDir(@NotNull String cppcheckOptions, @NotNull VirtualFile vFile) {
+    private static String prependIncludeDir(@NotNull final String cppcheckOptions, @NotNull final VirtualFile vFile) {
         final VirtualFile dir = vFile.getParent();
         if (dir == null) {
             return cppcheckOptions;

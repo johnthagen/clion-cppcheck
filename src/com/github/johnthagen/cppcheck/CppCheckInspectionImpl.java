@@ -35,7 +35,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CppCheckInspectionImpl {
+class CppCheckInspectionImpl {
     private static ProblemHighlightType severityToHighlightType(@NotNull final String severity) {
         switch (severity) {
             case "error":
@@ -77,8 +77,8 @@ public class CppCheckInspectionImpl {
 
         final List<ProblemDescriptor> descriptors = new ArrayList<>();
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder db = dbf.newDocumentBuilder();
         final org.w3c.dom.Document doc = db.parse(new InputSource(new StringReader(cppcheckOutput)));
 
         final NodeList errors = doc.getElementsByTagName("error");
