@@ -45,6 +45,7 @@ public class CppCheckInspectionImpl {
             case "style":
             case "performance":
             case "portability":
+            case "debug":
                 return ProblemHighlightType.WEAK_WARNING;
             case "information":
                 return ProblemHighlightType.INFORMATION;
