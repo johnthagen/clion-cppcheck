@@ -182,7 +182,7 @@ public class CppCheckInspectionImpl {
         final GeneralCommandLine cmd = new GeneralCommandLine()
                 .withExePath(command)
                 .withParameters(ParametersListUtil.parse(options))
-                .withParameters(ParametersListUtil.parse(filePath));
+                .withParameters(ParametersListUtil.parse("\"" + filePath + "\""));
 
         // Need to be able to get python from the system env
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
