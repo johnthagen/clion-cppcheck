@@ -21,6 +21,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CppcheckInspection extends LocalInspectionTool {
@@ -92,21 +95,51 @@ public class CppcheckInspection extends LocalInspectionTool {
         return String.format("-I\"%s\" %s", path, cppcheckOptions);
     }
 
+    // TODO: get the list of supported extensions from Cppcheck if it provides that information
+    // TODO: extend list by extensions configured within CLion
+    private final static List<String> supportedCExtensions = new ArrayList<>(Arrays.asList(
+            "c",
+            "cl"));
+
+    private final static List<String> supportedCPPExtensions = new ArrayList<>(Arrays.asList(
+            "cc",
+            "cp",
+            "cpp",
+            "c++",
+            "cxx",
+            "hh",
+            "hpp",
+            "hxx",
+            "tpp",
+            "txx"));
+
+    private final static List<String> supportedHeaderExtensions = new ArrayList<>(Collections.singletonList(
+            "h"));
+
     private static boolean isCFamilyFile(@NotNull final VirtualFile file) {
+        return isCFile(file) || isCPPFile(file) || isHeaderFile(file);
+    }
+
+    static private boolean isFile(@NotNull final VirtualFile file, @NotNull final List<String> supportedExtensions)
+    {
         final String fileExtension = file.getExtension();
         if (fileExtension == null) {
             return false;
         }
 
         final String lowerFileExtension = fileExtension.toLowerCase();
-        return lowerFileExtension.equals("c") ||
-                lowerFileExtension.equals("cc") ||
-                lowerFileExtension.equals("cp") ||
-                lowerFileExtension.equals("cpp") ||
-                lowerFileExtension.equals("c++") ||
-                lowerFileExtension.equals("cxx") ||
-                lowerFileExtension.equals("h") ||
-                lowerFileExtension.equals("hh") ||
-                lowerFileExtension.equals("hpp");
+        return supportedExtensions.contains(lowerFileExtension);
+    }
+
+    static private boolean isCFile(@NotNull final VirtualFile file) {
+        return isFile(file, supportedCExtensions);
+    }
+
+    static private boolean isCPPFile(@NotNull final VirtualFile file) {
+        return isFile(file, supportedCPPExtensions);
+    }
+
+    static private boolean isHeaderFile(@NotNull final VirtualFile file) {
+        return isFile(file, supportedHeaderExtensions);
     }
 }
