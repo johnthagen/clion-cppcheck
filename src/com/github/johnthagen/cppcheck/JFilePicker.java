@@ -11,7 +11,7 @@ class JFilePicker extends JPanel {
     private final JTextField textField;
     private final JFileChooser fileChooser;
 
-    JFilePicker(String textFieldLabel, String buttonLabel) {
+    JFilePicker(final String textFieldLabel, final String buttonLabel) {
         fileChooser = new JFileChooser();
 
         setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));

@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class Configuration implements Configurable {
+class Configuration implements Configurable {
     private boolean modified = false;
     private JFilePicker cppcheckFilePicker;
     private JTextField cppcheckOptionsField;
@@ -105,7 +105,7 @@ public class Configuration implements Configurable {
     }
 
     private void setModified() {
-        this.modified = true;
+        modified = true;
     }
 
     @Override
@@ -140,22 +140,22 @@ public class Configuration implements Configurable {
     private static class CppcheckConfigurationModifiedListener implements DocumentListener {
         private final Configuration option;
 
-        CppcheckConfigurationModifiedListener(Configuration option) {
+        CppcheckConfigurationModifiedListener(final Configuration option) {
             this.option = option;
         }
 
         @Override
-        public void insertUpdate(DocumentEvent documentEvent) {
+        public void insertUpdate(final DocumentEvent documentEvent) {
             option.setModified();
         }
 
         @Override
-        public void removeUpdate(DocumentEvent documentEvent) {
+        public void removeUpdate(final DocumentEvent documentEvent) {
             option.setModified();
         }
 
         @Override
-        public void changedUpdate(DocumentEvent documentEvent) {
+        public void changedUpdate(final DocumentEvent documentEvent) {
             option.setModified();
         }
     }
