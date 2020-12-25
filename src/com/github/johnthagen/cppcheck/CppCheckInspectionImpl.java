@@ -114,6 +114,16 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
+            // suppress this warning until Cppcheck handles them in a better way
+            if (id.equals("unusedFunction")) {
+                continue;
+            }
+
+            // suppress this warning for headers until Cppcheck handles them in a better way
+            if (SupportedExtensions.isHeaderFile(psiFile.getVirtualFile()) && id.equals("unusedStructMember")) {
+                continue;
+            }
+
             final String severity = attributes.getNamedItem("severity").getNodeValue();
             final String errorMessage = attributes.getNamedItem("msg").getNodeValue();
             final Node inconclusiveNode = attributes.getNamedItem("inconclusive");
