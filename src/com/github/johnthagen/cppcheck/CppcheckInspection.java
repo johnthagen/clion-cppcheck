@@ -4,9 +4,7 @@ import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.execution.ExecutionException;
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.io.FileUtil;
@@ -66,10 +64,9 @@ class CppcheckInspection extends LocalInspectionTool {
                     tempFile.getName());
             return descriptors.toArray(new ProblemDescriptor[0]);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
-            Notifications.Bus.notify(new Notification("Cppcheck",
-                    "Cppcheck execution failed.",
+            CppcheckNotification.send("execution failed",
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
-                    NotificationType.ERROR));
+                    NotificationType.ERROR);
         } finally {
             if (tempFile != null) {
                 FileUtil.delete(tempFile);

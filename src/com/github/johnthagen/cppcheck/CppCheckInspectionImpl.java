@@ -7,9 +7,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.progress.ProcessCanceledException;
@@ -69,10 +67,9 @@ class CppCheckInspectionImpl {
 
         if (VERBOSE_LOG) {
             // TODO: provide XML output via a "Show Cppcheck output" action - event log messages are truncated
-            Notifications.Bus.notify(new Notification("Cppcheck",
-                    "Cppcheck execution output for " + psiFile.getName(),
+            CppcheckNotification.send("execution output for " + psiFile.getName(),
                     cppcheckOutput,
-                    NotificationType.INFORMATION));
+                    NotificationType.INFORMATION);
         }
 
         final List<ProblemDescriptor> descriptors = new ArrayList<>();
@@ -160,10 +157,9 @@ class CppCheckInspectionImpl {
 
             // Cppcheck error
             if (lineNumber <= 0 || lineNumber > document.getLineCount()) {
-                Notifications.Bus.notify(new Notification("Cppcheck",
-                        "Cppcheck line number out-of-bounds " + i,
+                CppcheckNotification.send("line number out-of-bounds " + i,
                         id + " " + severity + " " + inconclusive + " " + errorMessage + " " + fileName + " " + lineNumber + " " + column,
-                        NotificationType.ERROR));
+                        NotificationType.ERROR);
                 continue;
             }
 
