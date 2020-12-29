@@ -140,6 +140,9 @@ class CppCheckInspectionImpl {
 
             // ignore entries without location e.g. missingIncludeSystem
             if (location == null) {
+                CppcheckNotification.send("no location for " + psiFile.getVirtualFile().getCanonicalPath(),
+                        id + " " + severity + " " + inconclusive + " " + errorMessage,
+                        NotificationType.ERROR);
                 continue;
             }
 
