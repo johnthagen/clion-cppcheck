@@ -53,6 +53,11 @@ See this page for details: https://jetbrains.org/intellij/sdk/docs/basics/gettin
 To build the plugin for deployment to the https://plugins.jetbrains.com/, select Build | Prepare Plugin Module For
 Deployment.
 
+## Maintainers
+
+- @johnthagen
+- @firewave
+
 ## Releases
 
 ### 1.6.0 - XXXX-XX-XX
