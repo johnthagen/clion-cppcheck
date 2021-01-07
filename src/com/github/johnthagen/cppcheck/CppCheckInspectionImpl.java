@@ -7,9 +7,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.progress.ProcessCanceledException;
@@ -69,10 +67,9 @@ class CppCheckInspectionImpl {
 
         if (VERBOSE_LOG) {
             // TODO: provide XML output via a "Show Cppcheck output" action - event log messages are truncated
-            Notifications.Bus.notify(new Notification("Cppcheck",
-                    "Cppcheck execution output for " + psiFile.getName(),
+            CppcheckNotification.send("execution output for " + psiFile.getVirtualFile().getCanonicalPath(),
                     cppcheckOutput,
-                    NotificationType.INFORMATION));
+                    NotificationType.INFORMATION);
         }
 
         final List<ProblemDescriptor> descriptors = new ArrayList<>();
@@ -119,6 +116,16 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
+            // suppress this warnings for now - will be properly handled in an upcoming patch
+            if (id.equals("noValidConfiguration") || id.equals("missingInclude")) {
+                continue;
+            }
+
+            // we are never interested in these
+            if (id.equals("unmatchedSuppression") || id.equals("purgedConfiguration")) {
+                continue;
+            }
+
             // suppress this warning for headers until Cppcheck handles them in a better way
             if (SupportedExtensions.isHeaderFile(psiFile.getVirtualFile()) && id.equals("unusedStructMember")) {
                 continue;
@@ -143,6 +150,9 @@ class CppCheckInspectionImpl {
 
             // ignore entries without location e.g. missingIncludeSystem
             if (location == null) {
+                CppcheckNotification.send("no location for " + psiFile.getVirtualFile().getCanonicalPath(),
+                        id + " " + severity + " " + inconclusive + " " + errorMessage,
+                        NotificationType.ERROR);
                 continue;
             }
 
@@ -160,10 +170,9 @@ class CppCheckInspectionImpl {
 
             // Cppcheck error
             if (lineNumber <= 0 || lineNumber > document.getLineCount()) {
-                Notifications.Bus.notify(new Notification("Cppcheck",
-                        "Cppcheck line number out-of-bounds " + i,
+                CppcheckNotification.send("line number out-of-bounds for " + psiFile.getVirtualFile().getCanonicalPath(),
                         id + " " + severity + " " + inconclusive + " " + errorMessage + " " + fileName + " " + lineNumber + " " + column,
-                        NotificationType.ERROR));
+                        NotificationType.ERROR);
                 continue;
             }
 
