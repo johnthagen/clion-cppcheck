@@ -106,8 +106,8 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
-            // suppress this warnings for now - will be properly handled in an upcoming patch
-            if (id.equals("noValidConfiguration") || id.equals("missingInclude")) {
+            // only show these global warnings in verbose mode
+            if (!VERBOSE_LOG && (id.equals("noValidConfiguration") || id.equals("missingInclude") || id.equals("toomanyconfigs"))) {
                 continue;
             }
 
