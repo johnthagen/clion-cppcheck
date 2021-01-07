@@ -116,6 +116,16 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
+            // suppress this warnings for now - will be properly handled in an upcoming patch
+            if (id.equals("noValidConfiguration") || id.equals("missingInclude")) {
+                continue;
+            }
+
+            // we are never interested in these
+            if (id.equals("unmatchedSuppression") || id.equals("purgedConfiguration")) {
+                continue;
+            }
+
             // suppress this warning for headers until Cppcheck handles them in a better way
             if (SupportedExtensions.isHeaderFile(psiFile.getVirtualFile()) && id.equals("unusedStructMember")) {
                 continue;
