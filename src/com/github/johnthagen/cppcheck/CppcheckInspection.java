@@ -64,7 +64,7 @@ class CppcheckInspection extends LocalInspectionTool {
                     tempFile.getName());
             return descriptors.toArray(new ProblemDescriptor[0]);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
-            CppcheckNotification.send("execution failed",
+            CppcheckNotification.send("execution failed for " + file.getVirtualFile().getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
         } finally {

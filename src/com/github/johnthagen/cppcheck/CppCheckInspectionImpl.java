@@ -67,7 +67,7 @@ class CppCheckInspectionImpl {
 
         if (VERBOSE_LOG) {
             // TODO: provide XML output via a "Show Cppcheck output" action - event log messages are truncated
-            CppcheckNotification.send("execution output for " + psiFile.getName(),
+            CppcheckNotification.send("execution output for " + psiFile.getVirtualFile().getCanonicalPath(),
                     cppcheckOutput,
                     NotificationType.INFORMATION);
         }
@@ -157,7 +157,7 @@ class CppCheckInspectionImpl {
 
             // Cppcheck error
             if (lineNumber <= 0 || lineNumber > document.getLineCount()) {
-                CppcheckNotification.send("line number out-of-bounds " + i,
+                CppcheckNotification.send("line number out-of-bounds for " + psiFile.getVirtualFile().getCanonicalPath(),
                         id + " " + severity + " " + inconclusive + " " + errorMessage + " " + fileName + " " + lineNumber + " " + column,
                         NotificationType.ERROR);
                 continue;
