@@ -44,9 +44,9 @@ class CppCheckInspectionImpl {
             case "performance":
             case "portability":
             case "debug":
-                return ProblemHighlightType.WEAK_WARNING;
+            // INFORMATION problems are not shown in the IDE at all so we need to treat them as weak warnings
             case "information":
-                return ProblemHighlightType.INFORMATION;
+                return ProblemHighlightType.WEAK_WARNING;
 
             // If the severity is not understood (changes in Cppcheck), return ERROR.
             default:
