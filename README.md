@@ -70,6 +70,7 @@ Deployment.
 - Added `.cl`, `.hxx`, `.tpp` and `.txx` to list of supported file extensions - now matches the ones supported by Cppcheck internally. (Contribution by @firewave)
 - Internally suppress `unusedFunction` and `unusedStructMember`  (for header files only) warnings to avoid false positives. (Contribution by @firewave)
 - Fixed `information` messages not being shown at all. (Contribution by @firewave)
+- Show some Cppcheck messages (`toomanyconfigs`, `missingInclude`, `noValidConfiguration`) on file-level. (Contribution by @firewave)
 
 ### 1.5.1 - 2020-11-12
 
