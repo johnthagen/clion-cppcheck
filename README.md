@@ -60,7 +60,9 @@ Deployment.
 
 ## Releases
 
-### 1.6.0 - XXXX-XX-XX
+### X.X.X - Unreleased
+
+### 1.6.0 - 2021-12-26
 
 - Parse `--xml` output instead of text output. (Contribution by @firewave)
 - Fixed scanning of files with whitespaces in name. (Contribution by @firewave)
