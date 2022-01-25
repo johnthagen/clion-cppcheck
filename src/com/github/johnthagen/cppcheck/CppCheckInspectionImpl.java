@@ -159,7 +159,13 @@ class CppCheckInspectionImpl {
             final NamedNodeMap locationAttributes = location.getAttributes();
             final String fileName = new File(locationAttributes.getNamedItem("file").getNodeValue()).getName();
             int lineNumber = Integer.parseInt(locationAttributes.getNamedItem("line").getNodeValue());
-            final int column = Integer.parseInt(locationAttributes.getNamedItem("column").getNodeValue()); // TODO
+            final Node columnAttr = locationAttributes.getNamedItem("column");
+            // TODO: use in ProblemDescriptor
+            int column = -1;
+            // the "column" attribute was added in Cppcheck 1.89
+            if (columnAttr != null) {
+                column = Integer.parseInt(columnAttr.getNodeValue());
+            }
 
             // If a file #include's header files, Cppcheck will also run on the header files and print
             // any errors. These errors don't apply to the current file and should not be drawn. They can

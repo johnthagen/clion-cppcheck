@@ -60,6 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    - Fixed `NullPointerException` with Cppcheck < 1.89 caused by missing 'column' attribute in XML result.
     ]]>
   </change-notes>
 
