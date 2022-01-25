@@ -60,7 +60,10 @@ Deployment.
 
 ## Releases
 
-### X.X.X - Unreleased
+### 1.6.1 - 2022-01-14
+
+- Fixed missing `commons-lang3` dependency.
+- Fixed `.idea` project provided by repository.
 
 ### 1.6.0 - 2021-12-26
 
