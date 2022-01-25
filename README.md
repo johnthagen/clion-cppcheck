@@ -60,6 +60,8 @@ Deployment.
 
 ## Releases
 
+### 1.6.2 - 20XX-XX-XX
+
 ### 1.6.1 - 2022-01-14
 
 - Fixed missing `commons-lang3` dependency.
