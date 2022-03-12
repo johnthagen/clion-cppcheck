@@ -36,12 +36,59 @@ See
 
 ## Known Issues
 
+### Analyzing header files
+
 `cppcheck` is not designed to be run on header files (`.h`) directly, as must be done for this
 plugin, and as a result may have false positives.
 
 When run on header files directly, `cppcheck` defaults to C as the language, which will generate
-false positives for C++ projects.  C++ projects should append `--language=c++` to the
-`cppcheck` options.
+false positives for C++ projects. So `--language=c++` is implicitly added as option when analyzing header files.
+
+It will also provide `unusedFunction` and `unusedStructMember` false positives so these findings are being suppressed.
+
+### Analyzing multiple configurations
+
+By default `cppcheck` tries to determine all the available configurations for a file (i.e. all combination of the used 
+preprocessor defines). As the plugin doesn't get the current list of defines this may lead to findings shown in code 
+which is shown as disabled in the editor. To check just a specific configuration you can either add defines using `-D`
+to the options. Or you can limit the configurations to a single one adding `--max-configs=1`.
+
+By default Limiting the configurations also decreases the time of the analysis.
+
+By default a maximum of 12 configurations is checked. This may lead to some code which might actually be active not to 
+show any findings. This can also be controlled by the `--max-configs=<n>` option.
+
+### Multiple include paths
+
+No additional includes path are being passed to `cppcheck` for the analysis which might result in false positives or not
+all findings being shown.
+
+You can add additional include path using the `-I <path>` options.
+
+### Batch analysis
+
+The batch analysis passes the files individually to `cppcheck` just like the highlighting inspections. So if you pass a 
+folder to the batch analysis it might not show the same findings as when passing a folder to `cppcheck` itself.
+
+It will also pass all the contents of the folder to the analysis and not just project files. This might lead to
+unexpected findings.
+
+Also some findings in headers files triggered by the analysis of a source files are not being shown.
+
+### Showing raw output
+
+Currently there is no way to view the raw output of the `cppcheck` execution.
+
+### External libraries / System includes
+
+`cppcheck` does not support analyzing of external library or system includes. It provides profiles for several external
+libraries which describe the contents and behavior of the includes which allows it to finding issues with usage of them
+in the code. To add such a profile to your analysis you need to specify it via the `--library=<name>` option. The
+available profile can be found in the `cfg` folder of your `cppcheck` installation. 
+
+### Global options
+
+Currently the configured options are global and not per project.
 
 ## Development
 
@@ -59,6 +106,9 @@ Deployment.
 - @firewave
 
 ## Releases
+
+### 1.7.0 - XXXX-XX-XX
+- Show some Cppcheck messages (`toomanyconfigs`, `missingInclude`, `noValidConfiguration`) on file-level. See [Known Issues](#known-issues) on how to fix these. (Contribution by @firewave)
 
 ### 1.6.2 - 2022-01-25
 
