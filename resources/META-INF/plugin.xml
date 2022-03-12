@@ -52,11 +52,7 @@
       <br/>
 
       <b>Known issues:</b><br/>
-        Cppcheck is not designed to be run on header files (.h) directly, as must be done for this
-        plugin, and as a result may have false positives.<br/>
-        When run on header files directly, Cppcheck defaults to C as the language, which will
-        generate false positives for C++ projects. C++ projects should leave --language=c++ appended to the
-        Cppcheck options.<br/>
+        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#known-issues">Known Issues</a>.<br/>
     ]]></description>
 
   <change-notes><![CDATA[
