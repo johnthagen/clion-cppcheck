@@ -56,6 +56,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+      - Show some Cppcheck messages (toomanyconfigs, missingInclude, noValidConfiguration) on file-level. See <a href="https://github.com/johnthagen/clion-cppcheck#known-issues">Known Issues</a> on how to fix these. (Contribution by @firewave)
     ]]>
   </change-notes>
 

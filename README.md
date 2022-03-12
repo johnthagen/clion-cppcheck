@@ -108,6 +108,7 @@ Deployment.
 ## Releases
 
 ### 1.7.0 - XXXX-XX-XX
+- Show some Cppcheck messages (`toomanyconfigs`, `missingInclude`, `noValidConfiguration`) on file-level. See [Known Issues](#known-issues) on how to fix these. (Contribution by @firewave)
 
 ### 1.6.2 - 2022-01-25
 
