@@ -62,6 +62,8 @@ Deployment.
 
 ### 1.6.3 - 20XX-XX-XX
 
+- Added `Show Cppcheck XML Output` action to show the latest XML output.
+
 ### 1.6.2 - 2022-01-25
 
 - Fixed `NullPointerException` with Cppcheck < 1.89 caused by missing `column` attribute in XML result.

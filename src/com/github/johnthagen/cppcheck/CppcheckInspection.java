@@ -19,9 +19,13 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 class CppcheckInspection extends LocalInspectionTool {
+    final static Path LATEST_RESULT_FILE = Paths.get(FileUtil.getTempDirectory(), "clion-cppcheck-latest.xml");
+
     @Nullable
     @Override
     public ProblemDescriptor[] checkFile(@NotNull final PsiFile file,
@@ -59,6 +63,9 @@ class CppcheckInspection extends LocalInspectionTool {
             final String cppcheckOutput =
                     CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
                             tempFile, cppcheckMisraPath);
+
+            // store the output of the latest analysis
+            FileUtil.writeToFile(LATEST_RESULT_FILE.toFile(), cppcheckOutput);
 
             final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());

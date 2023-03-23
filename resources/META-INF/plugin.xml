@@ -60,6 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    - Added `Show Cppcheck XML Output` action to show the latest XML output.
     ]]>
   </change-notes>
 
@@ -84,6 +85,8 @@
 
   <actions>
     <!-- Add your actions here -->
+    <action id="com.github.johnthagen.cppcheck.ShowOutputAction" class="com.github.johnthagen.cppcheck.ShowOutputAction"
+            text="Show Cppcheck XML Output" description="Show the raw Cppcheck --xml output of the latest analysis"/>
   </actions>
 
 </idea-plugin>
