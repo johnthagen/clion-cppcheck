@@ -57,14 +57,14 @@ class CppcheckInspection extends LocalInspectionTool {
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
-                    CppCheckInspectionImpl.executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
-                            tempFile.getAbsolutePath(), cppcheckMisraPath);
+                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
+                            tempFile, cppcheckMisraPath);
 
             final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
             return descriptors.toArray(new ProblemDescriptor[0]);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
-            CppcheckNotification.send("execution failed for " + file.getVirtualFile().getCanonicalPath(),
+            CppcheckNotification.send("execution failed for " + vFile.getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
         } finally {
