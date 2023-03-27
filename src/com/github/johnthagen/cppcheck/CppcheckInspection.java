@@ -3,10 +3,12 @@ package com.github.johnthagen.cppcheck;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.execution.ExecutionException;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
@@ -56,6 +58,7 @@ class CppcheckInspection extends LocalInspectionTool {
         }
         cppcheckOptions = String.format("%s --xml", cppcheckOptions);
 
+        ProblemDescriptor[] descriptors;
         File tempFile = null;
         try {
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
@@ -67,20 +70,27 @@ class CppcheckInspection extends LocalInspectionTool {
             // store the output of the latest analysis
             FileUtil.writeToFile(LATEST_RESULT_FILE.toFile(), cppcheckOutput);
 
-            final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
+            final List<ProblemDescriptor> descriptorsList = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
-            return descriptors.toArray(new ProblemDescriptor[0]);
+            descriptors = descriptorsList.toArray(new ProblemDescriptor[0]);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
             CppcheckNotification.send("execution failed for " + vFile.getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
+            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
+                    file,
+                    (TextRange)null,
+                    "Cppcheck execution failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage().split("\n", 2)[0],
+                    ProblemHighlightType.GENERIC_ERROR,
+                    true);
+            descriptors = new ProblemDescriptor[]{problemDescriptor};
         } finally {
             if (tempFile != null) {
                 FileUtil.delete(tempFile);
             }
         }
 
-        return ProblemDescriptor.EMPTY_ARRAY;
+        return descriptors;
     }
 
     @NotNull
