@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.6.2</version>
+  <version>1.6.3</version>
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -60,7 +60,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-    - Fixed `NullPointerException` with Cppcheck < 1.89 caused by missing 'column' attribute in XML result.
+    - Added `Show Cppcheck XML Output` action to show the latest XML output.
     ]]>
   </change-notes>
 
@@ -85,6 +85,8 @@
 
   <actions>
     <!-- Add your actions here -->
+    <action id="com.github.johnthagen.cppcheck.ShowOutputAction" class="com.github.johnthagen.cppcheck.ShowOutputAction"
+            text="Show Cppcheck XML Output" description="Show the raw Cppcheck --xml output of the latest analysis"/>
   </actions>
 
 </idea-plugin>

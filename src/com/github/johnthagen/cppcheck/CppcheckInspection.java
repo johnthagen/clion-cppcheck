@@ -19,9 +19,13 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 class CppcheckInspection extends LocalInspectionTool {
+    final static Path LATEST_RESULT_FILE = Paths.get(FileUtil.getTempDirectory(), "clion-cppcheck-latest.xml");
+
     @Nullable
     @Override
     public ProblemDescriptor[] checkFile(@NotNull final PsiFile file,
@@ -57,14 +61,17 @@ class CppcheckInspection extends LocalInspectionTool {
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
-                    CppCheckInspectionImpl.executeCommandOnFile(cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
-                            tempFile.getAbsolutePath(), cppcheckMisraPath);
+                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
+                            tempFile, cppcheckMisraPath);
+
+            // store the output of the latest analysis
+            FileUtil.writeToFile(LATEST_RESULT_FILE.toFile(), cppcheckOutput);
 
             final List<ProblemDescriptor> descriptors = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
             return descriptors.toArray(new ProblemDescriptor[0]);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
-            CppcheckNotification.send("execution failed for " + file.getVirtualFile().getCanonicalPath(),
+            CppcheckNotification.send("execution failed for " + vFile.getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
         } finally {

@@ -14,6 +14,7 @@ import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.DocumentUtil;
 import com.intellij.util.execution.ParametersListUtil;
@@ -55,7 +56,7 @@ class CppCheckInspectionImpl {
     }
 
     // TODO: make configurable
-    private static final boolean VERBOSE_LOG = false;
+    private static final int VERBOSE_LOG = 0;
     private static final String INCONCLUSIVE_TEXT = ":inconclusive";
 
     @NotNull
@@ -65,10 +66,11 @@ class CppCheckInspectionImpl {
                                                       @NotNull final String cppcheckOutput,
                                                       @NotNull final String sourceFileName) throws IOException, SAXException, ParserConfigurationException {
 
-        if (VERBOSE_LOG) {
+        final VirtualFile vFile = psiFile.getVirtualFile();
+        if (VERBOSE_LOG >= 1) {
             // TODO: provide XML output via a "Show Cppcheck output" action - event log messages are truncated
-            CppcheckNotification.send("execution output for " + psiFile.getVirtualFile().getCanonicalPath(),
-                    cppcheckOutput,
+            CppcheckNotification.send("finished analysis for " + vFile.getCanonicalPath(),
+                    "",
                     NotificationType.INFORMATION);
         }
 
@@ -127,7 +129,7 @@ class CppCheckInspectionImpl {
             }
 
             // suppress this warning for headers until Cppcheck handles them in a better way
-            if (SupportedExtensions.isHeaderFile(psiFile.getVirtualFile()) && id.equals("unusedStructMember")) {
+            if (SupportedExtensions.isHeaderFile(vFile) && id.equals("unusedStructMember")) {
                 continue;
             }
 
@@ -150,7 +152,7 @@ class CppCheckInspectionImpl {
 
             // ignore entries without location e.g. missingIncludeSystem
             if (location == null) {
-                CppcheckNotification.send("no location for " + psiFile.getVirtualFile().getCanonicalPath(),
+                CppcheckNotification.send("no location for " + vFile.getCanonicalPath(),
                         id + " " + severity + " " + inconclusive + " " + errorMessage,
                         NotificationType.ERROR);
                 continue;
@@ -167,6 +169,12 @@ class CppCheckInspectionImpl {
                 column = Integer.parseInt(columnAttr.getNodeValue());
             }
 
+            if (VERBOSE_LOG >= 4) {
+                CppcheckNotification.send(id + " for " + vFile.getCanonicalPath(),
+                        id + " " + severity + " " + inconclusive + " " + errorMessage + " " + fileName + " " + lineNumber + " " + column,
+                        NotificationType.INFORMATION);
+            }
+
             // If a file #include's header files, Cppcheck will also run on the header files and print
             // any errors. These errors don't apply to the current file and should not be drawn. They can
             // be distinguished by checking the file name.
@@ -176,7 +184,7 @@ class CppCheckInspectionImpl {
 
             // Cppcheck error
             if (lineNumber <= 0 || lineNumber > document.getLineCount()) {
-                CppcheckNotification.send("line number out-of-bounds for " + psiFile.getVirtualFile().getCanonicalPath(),
+                CppcheckNotification.send("line number out-of-bounds for " + vFile.getCanonicalPath(),
                         id + " " + severity + " " + inconclusive + " " + errorMessage + " " + fileName + " " + lineNumber + " " + column,
                         NotificationType.ERROR);
                 continue;
@@ -201,18 +209,25 @@ class CppCheckInspectionImpl {
 
     private static final int TIMEOUT_MS = 60 * 1000;
 
-    public static String executeCommandOnFile(@NotNull final String command,
+    public static String executeCommandOnFile(@NotNull final VirtualFile vFile,
+                                              @NotNull final String command,
                                               @NotNull final String options,
-                                              @NotNull final String filePath,
+                                              @NotNull final File filePath,
                                               final String cppcheckMisraPath) throws CppcheckError, ExecutionException {
         final GeneralCommandLine cmd = new GeneralCommandLine()
                 .withExePath(command)
                 .withParameters(ParametersListUtil.parse(options))
-                .withParameters(ParametersListUtil.parse("\"" + filePath + "\""));
+                .withParameters(ParametersListUtil.parse("\"" + filePath.getAbsolutePath() + "\""));
 
         // Need to be able to get python from the system env
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
             cmd.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.SYSTEM);
+        }
+
+        if (VERBOSE_LOG >= 2) {
+            CppcheckNotification.send("options for " + vFile.getCanonicalPath(),
+                    cmd.getCommandLineString(),
+                    NotificationType.INFORMATION);
         }
 
         final CapturingProcessHandler processHandler = new CapturingProcessHandler(cmd);
