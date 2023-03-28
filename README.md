@@ -13,30 +13,15 @@ This project is supported with a free open source license of CLion from
 
 ## Installation
 
-Install the [`cppcheck` plugin][cppcheck_plugin] from the JetBrains Marketplace.
-
-See 
+- Install the `cppcheck` plugin from the JetBrains Marketplace: https://plugins.jetbrains.com/plugin/8143-cppcheck. See 
 [Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/managing-plugins.html) for more details.
 
-### Initial Plugin Configuration
+- Install Cppcheck. Please refer to https://github.com/danmar/cppcheck#packages on how to obtain a version of Cppcheck for your platform.
 
-1. Install the [`cppcheck`](http://cppcheck.sourceforge.net/) tool using the instructions on its homepage. This plugin
-   does **not** bundle the Cppcheck tool itself, which must be installed separately.
-2. Install the [cppcheck plugin][cppcheck_plugin] into CLion.
-3. Configure the plugin with the **absolute** path to the Cppcheck executable into the `cppcheck path` option.
-    1. Windows
-        1. File | Settings | Cppcheck configuration
-        2. Usually the path is `C:\Program Files (x86)\Cppcheck\cppcheck.exe`
-    2. macOS: 
-        1. CLion | Preferences | Cppcheck configuration
-        2. In a terminal run `which cppcheck` to find the path to Cppcheck. If you installed it with 
-           [Homebrew](https://brew.sh/), the path will be `/usr/local/bin/cppcheck`.
-    3. Linux
-        1. File | Settings | Cppcheck configuration
-        2. In a terminal run `which cppcheck` to find the path to Cppcheck. If you installed it with your
-           system's package manager, it is probably located at `/usr/bin/cppcheck`. 
+- Go to the `Cppcheck Configuration` section in the settings of your respective JetBrains IDE and put the **absolute** path to the Cppcheck executable in the `Cppcheck Path`.
 
-[cppcheck_plugin]: https://plugins.jetbrains.com/plugin/8143
+- (Windows) The executable is found in the path you specified during the installation. By default this should be `C:\Program Files\Cppcheck\cppcheck.exe`.
+- (Non-Windows) Use `which cppcheck` or `command -v cppcheck` on the command-line to get the location of the executable. The default depends on your system but should usually be `/usr/bin/cppcheck` or `/usr/local/bin/cppcheck`.
 
 ## Usage
 
