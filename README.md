@@ -1,20 +1,24 @@
-# CLion-cppcheck
+# clion-cppcheck
 
-- Runs `cppcheck` on the fly while you write code.
-- Highlights lines and displays `cppcheck` error messages.
-- Supports passing options to `cppcheck`.
+A plugin for JetBrains IDEs to provide inspections for C/C++ files utilizing the static analyzer [Cppcheck](https://cppcheck.sourceforge.io/). 
 
 This project is supported with a free open source license of CLion from 
 [JetBrains](https://www.jetbrains.com/?from=clion-cppcheck).
 
+## Features
+
+- Runs `Cppcheck` on the fly while you write code.
+- Highlights lines and displays `Cppcheck` error messages.
+- Supports passing options to `Cppcheck`.
+
 ## Installation
 
+Install the [`cppcheck` plugin][cppcheck_plugin] from the JetBrains Marketplace.
+
 See 
-[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/managing-plugins.html)
+[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/managing-plugins.html) for more details.
 
-- [`cppcheck` in JetBrains Plugin Repository][cppcheck_plugin]
-
-### Initial Configuration
+### Initial Plugin Configuration
 
 1. Install the [`cppcheck`](http://cppcheck.sourceforge.net/) tool using the instructions on its homepage. This plugin
    does **not** bundle the `cppcheck` tool itself, which must be installed separately.

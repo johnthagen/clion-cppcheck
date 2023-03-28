@@ -5,7 +5,7 @@
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
-      Cppcheck plugin for CLion.<br/><br/>
+      A plugin for JetBrains IDEs to provide inspections for C/C++ files utilizing the static analyzer Cppcheck.<br/><br/>
 
       <b>Features:</b><br/>
       <ul>
