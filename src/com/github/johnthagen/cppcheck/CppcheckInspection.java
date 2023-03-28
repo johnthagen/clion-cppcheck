@@ -11,7 +11,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -45,9 +44,24 @@ class CppcheckInspection extends LocalInspectionTool {
 
         final String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
         if (cppcheckPath == null || cppcheckPath.isEmpty()) {
-            StatusBar.Info.set("[!] Error: Please set path of cppcheck in File->Settings->Cppcheck Configuration",
-                    file.getProject());
-            return ProblemDescriptor.EMPTY_ARRAY;
+            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
+                    file,
+                    (TextRange)null,
+                    "Please set 'Cppcheck Path' in the 'Cppcheck Configuration'.",
+                    ProblemHighlightType.GENERIC_ERROR,
+                    true);
+            return new ProblemDescriptor[]{problemDescriptor};
+        }
+
+        final File cppcheckPathFile = new File(cppcheckPath);
+        if (!cppcheckPathFile.exists()) {
+            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
+                    file,
+                    (TextRange)null,
+                    "Configured 'Cppcheck Path' in the 'Cppcheck Configuration' does not exist: " + cppcheckPathFile.getAbsolutePath(),
+                    ProblemHighlightType.GENERIC_ERROR,
+                    true);
+            return new ProblemDescriptor[]{problemDescriptor};
         }
 
         String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
@@ -64,7 +78,7 @@ class CppcheckInspection extends LocalInspectionTool {
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
-                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
+                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPathFile, prependIncludeDir(cppcheckOptions, vFile),
                             tempFile, cppcheckMisraPath);
 
             // store the output of the latest analysis

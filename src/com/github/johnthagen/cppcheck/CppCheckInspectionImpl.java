@@ -210,12 +210,12 @@ class CppCheckInspectionImpl {
     private static final int TIMEOUT_MS = 60 * 1000;
 
     public static String executeCommandOnFile(@NotNull final VirtualFile vFile,
-                                              @NotNull final String command,
+                                              @NotNull final File command,
                                               @NotNull final String options,
                                               @NotNull final File filePath,
                                               final String cppcheckMisraPath) throws CppcheckError, ExecutionException {
         final GeneralCommandLine cmd = new GeneralCommandLine()
-                .withExePath(command)
+                .withExePath(command.toString())
                 .withParameters(ParametersListUtil.parse(options))
                 .withParameters(ParametersListUtil.parse("\"" + filePath.getAbsolutePath() + "\""));
 
