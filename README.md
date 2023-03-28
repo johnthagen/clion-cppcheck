@@ -14,7 +14,7 @@ See
 
 - [`cppcheck` in JetBrains Plugin Repository][cppcheck_plugin]
 
-## Usage
+### Initial Configuration
 
 1. Install the [`cppcheck`](http://cppcheck.sourceforge.net/) tool using the instructions on its homepage. This plugin
    does **not** bundle the `cppcheck` tool itself, which must be installed separately.
@@ -34,6 +34,12 @@ See
 
 [cppcheck_plugin]: https://plugins.jetbrains.com/plugin/8143
 
+## Usage
+
+### Provided Actions
+
+The plugin provides the `Show Cppcheck XML Output` action which will show the raw XML output of the latest finished analysis.
+
 ## Known Issues
 
 `cppcheck` is not designed to be run on header files (`.h`) directly, as must be done for this
@@ -42,6 +48,9 @@ plugin, and as a result may have false positives.
 When run on header files directly, `cppcheck` defaults to C as the language, which will generate
 false positives for C++ projects.  C++ projects should append `--language=c++` to the
 `cppcheck` options.
+
+`Show Cppcheck XML Output` only shows the XML result of the latest analysis. If you need to view the results for a 
+specific file make sure it was the last one analyzed.
 
 ## Development
 
