@@ -29,6 +29,17 @@ This project is supported with a free open source license of CLion from
 
 The plugin provides the `Show Cppcheck XML Output` action which will show the raw XML output of the latest finished analysis.
 
+## Plugin Configuration
+
+### Verbose Level
+
+The verbose level of the plugin. The following additional information are provided:
+
+`0` - no verbose information<br/>
+`1` - a notification will be shown if the analysis finished<br/>
+`2` - a notification will be shown if the analysis was invoked (includes all command-line options)<br/>
+`4` - a notification will be shown for each findings in the result (will not show the internally ignored ones)<br/>
+
 ## Known Issues/Limitations
 
 See https://github.com/johnthagen/clion-cppcheck/issues for a complete list of tracked issues and enhancements requests.
@@ -132,6 +143,7 @@ Deployment.
 - Report execution errors as global inspection errors.
 - Display `Cppcheck Path` configuration errors as global inspection errors instead of using a (hard to spot) status bar message.
 - Display global inspection error and omit the option if the configured `MISRA Addon JSON` does not exist.
+- Made plugin verbose level configurable via settings.
 
 ### 1.6.2 - 2022-01-25
 

@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CppCheckInspectionImpl {
+    CppCheckInspectionImpl(final int verboseLevel) {
+        this.verboseLevel = verboseLevel;
+    }
+
     private static ProblemHighlightType severityToHighlightType(@NotNull final String severity) {
         switch (severity) {
             case "error":
@@ -55,19 +59,18 @@ class CppCheckInspectionImpl {
         }
     }
 
-    // TODO: make configurable
-    private static final int VERBOSE_LOG = 0;
+    private final int verboseLevel;
     private static final String INCONCLUSIVE_TEXT = ":inconclusive";
 
     @NotNull
-    public static List<ProblemDescriptor> parseOutput(@NotNull final PsiFile psiFile,
-                                                      @NotNull final InspectionManager manager,
-                                                      @NotNull final Document document,
-                                                      @NotNull final String cppcheckOutput,
-                                                      @NotNull final String sourceFileName) throws IOException, SAXException, ParserConfigurationException {
+    public List<ProblemDescriptor> parseOutput(@NotNull final PsiFile psiFile,
+                                               @NotNull final InspectionManager manager,
+                                               @NotNull final Document document,
+                                               @NotNull final String cppcheckOutput,
+                                               @NotNull final String sourceFileName) throws IOException, SAXException, ParserConfigurationException {
 
         final VirtualFile vFile = psiFile.getVirtualFile();
-        if (VERBOSE_LOG >= 1) {
+        if (verboseLevel >= 1) {
             // TODO: provide XML output via a "Show Cppcheck output" action - event log messages are truncated
             CppcheckNotification.send("finished analysis for " + vFile.getCanonicalPath(),
                     "",
@@ -169,7 +172,7 @@ class CppCheckInspectionImpl {
                 column = Integer.parseInt(columnAttr.getNodeValue());
             }
 
-            if (VERBOSE_LOG >= 4) {
+            if (verboseLevel >= 4) {
                 CppcheckNotification.send(id + " for " + vFile.getCanonicalPath(),
                         id + " " + severity + " " + inconclusive + " " + errorMessage + " " + fileName + " " + lineNumber + " " + column,
                         NotificationType.INFORMATION);
@@ -209,11 +212,11 @@ class CppCheckInspectionImpl {
 
     private static final int TIMEOUT_MS = 60 * 1000;
 
-    public static String executeCommandOnFile(@NotNull final VirtualFile vFile,
-                                              @NotNull final File command,
-                                              @NotNull final String options,
-                                              @NotNull final File filePath,
-                                              final String cppcheckMisraPath) throws CppcheckError, ExecutionException {
+    public String executeCommandOnFile(@NotNull final VirtualFile vFile,
+                                       @NotNull final File command,
+                                       @NotNull final String options,
+                                       @NotNull final File filePath,
+                                       final String cppcheckMisraPath) throws CppcheckError, ExecutionException {
         final GeneralCommandLine cmd = new GeneralCommandLine()
                 .withExePath(command.toString())
                 .withParameters(ParametersListUtil.parse(options))
@@ -224,7 +227,7 @@ class CppCheckInspectionImpl {
             cmd.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.SYSTEM);
         }
 
-        if (VERBOSE_LOG >= 2) {
+        if (verboseLevel >= 2) {
             CppcheckNotification.send("options for " + vFile.getCanonicalPath(),
                     cmd.getCommandLineString(),
                     NotificationType.INFORMATION);
