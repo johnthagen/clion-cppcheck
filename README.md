@@ -63,6 +63,7 @@ Deployment.
 ### 1.6.3 - 20XX-XX-XX
 
 - Added `Show Cppcheck XML Output` action to show the latest XML output.
+- Report execution errors as global inspection errors.
 
 ### 1.6.2 - 2022-01-25
 

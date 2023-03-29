@@ -61,6 +61,7 @@
 
   <change-notes><![CDATA[
     - Added `Show Cppcheck XML Output` action to show the latest XML output.
+    - Report execution errors as global inspection errors.
     ]]>
   </change-notes>
 
