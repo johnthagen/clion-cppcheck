@@ -27,6 +27,17 @@ import java.util.List;
 class CppcheckInspection extends LocalInspectionTool {
     final static Path LATEST_RESULT_FILE = Paths.get(FileUtil.getTempDirectory(), "clion-cppcheck-latest.xml");
 
+    private static ProblemDescriptor createProblemDescriptor(@NotNull final PsiFile file,
+                                                             @NotNull final InspectionManager manager,
+                                                             @NotNull final String msg) {
+        return manager.createProblemDescriptor(
+                file,
+                (TextRange)null,
+                msg,
+                ProblemHighlightType.GENERIC_ERROR,
+                true);
+    }
+
     @Nullable
     @Override
     public ProblemDescriptor[] checkFile(@NotNull final PsiFile file,
@@ -44,23 +55,13 @@ class CppcheckInspection extends LocalInspectionTool {
 
         final String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
         if (cppcheckPath == null || cppcheckPath.isEmpty()) {
-            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                    file,
-                    (TextRange)null,
-                    "Please set 'Cppcheck Path' in the 'Cppcheck Configuration'.",
-                    ProblemHighlightType.GENERIC_ERROR,
-                    true);
+            final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Please set 'Cppcheck Path' in 'Cppcheck Configuration'.");
             return new ProblemDescriptor[]{problemDescriptor};
         }
 
         final File cppcheckPathFile = new File(cppcheckPath);
         if (!cppcheckPathFile.exists()) {
-            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                    file,
-                    (TextRange)null,
-                    "Configured 'Cppcheck Path' in the 'Cppcheck Configuration' does not exist: " + cppcheckPathFile.getAbsolutePath(),
-                    ProblemHighlightType.GENERIC_ERROR,
-                    true);
+            final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Configured 'Cppcheck Path' in 'Cppcheck Configuration' does not exist: " + cppcheckPathFile.getAbsolutePath());
             return new ProblemDescriptor[]{problemDescriptor};
         }
 
@@ -91,12 +92,7 @@ class CppcheckInspection extends LocalInspectionTool {
             CppcheckNotification.send("execution failed for " + vFile.getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
-            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                    file,
-                    (TextRange)null,
-                    "Cppcheck execution failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage().split("\n", 2)[0],
-                    ProblemHighlightType.GENERIC_ERROR,
-                    true);
+            final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Cppcheck execution failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage().split("\n", 2)[0]);
             descriptors = new ProblemDescriptor[]{problemDescriptor};
         } finally {
             if (tempFile != null) {
