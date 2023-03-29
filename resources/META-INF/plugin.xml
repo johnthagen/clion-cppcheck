@@ -5,7 +5,7 @@
   <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
-      Cppcheck plugin for CLion.<br/><br/>
+      A plugin for JetBrains IDEs to provide inspections for C/C++ files utilizing the static analyzer Cppcheck.<br/><br/>
 
       <b>Features:</b><br/>
       <ul>
@@ -16,47 +16,10 @@
       <br/>
 
       <b>Usage:</b><br/>
-      <ul>
-        <li>
-          Install the <a href="http://cppcheck.sourceforge.net/">cppcheck tool</a> using directions on its homepage.
-          This plugin does <b>not</b> bundle the Cppcheck tool itself, which must be installed separately.
-        </li>
-        <li>Install this Cppcheck plugin into CLion</li>
-        <li>Configure the plugin with the <b>absolute</b> path to the Cppcheck executable into the
-        'Cppcheck Path' configuration field</li>
-        <ul>
-          <li>Windows
-            <ul>
-              <li>File | Settings | Cppcheck Configuration</li>
-              <li>Usually the path is C:\Program Files (x86)\Cppcheck\cppcheck.exe</li>
-            </ul>
-          </li>
-          <li>macOS
-             <ul>
-               <li>CLion | Preferences | Cppcheck Configuration</li>
-               <li>In a terminal run `which cppcheck` to find the path to Cppcheck.
-               If you installed it with <a href="https://brew.sh/">Homebrew</a>, the path will be
-               /usr/local/bin/cppcheck</li>
-             </ul>
-          </li>
-          <li>Linux
-            <ul>
-              <li>File | Settings | Cppcheck Configuration</li>
-              <li>In a terminal run `which cppcheck` to find the path to Cppcheck.
-              If you installed it with your system's package manager, it is probably located at
-              /usr/bin/cppcheck</li>
-            </ul>
-          </li>
-        </u1>
-      </ul>
-      <br/>
+        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#known-issues">Installation</a>.<br/>
 
       <b>Known issues:</b><br/>
-        Cppcheck is not designed to be run on header files (.h) directly, as must be done for this
-        plugin, and as a result may have false positives.<br/>
-        When run on header files directly, Cppcheck defaults to C as the language, which will
-        generate false positives for C++ projects. C++ projects should leave --language=c++ appended to the
-        Cppcheck options.<br/>
+        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#known-issues">Known Issues</a>.<br/>
     ]]></description>
 
   <change-notes><![CDATA[

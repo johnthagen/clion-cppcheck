@@ -1,47 +1,113 @@
-# CLion-cppcheck
+# clion-cppcheck
 
-- Runs `cppcheck` on the fly while you write code.
-- Highlights lines and displays `cppcheck` error messages.
-- Supports passing options to `cppcheck`.
+A plugin for JetBrains IDEs to provide inspections for C/C++ files utilizing the static analyzer [Cppcheck](https://cppcheck.sourceforge.io/). 
 
 This project is supported with a free open source license of CLion from 
 [JetBrains](https://www.jetbrains.com/?from=clion-cppcheck).
 
+## Features
+
+- Runs `Cppcheck` on the fly while you write code.
+- Highlights lines and displays `Cppcheck` error messages.
+- Supports passing options to `Cppcheck`.
+
 ## Installation
 
-See 
-[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/managing-plugins.html)
+- Install the `cppcheck` plugin from the JetBrains Marketplace: https://plugins.jetbrains.com/plugin/8143-cppcheck. See 
+[Installing, Updating and Uninstalling Repository Plugins](https://www.jetbrains.com/help/clion/managing-plugins.html) for more details.
 
-- [`cppcheck` in JetBrains Plugin Repository][cppcheck_plugin]
+- Install Cppcheck. Please refer to https://github.com/danmar/cppcheck#packages on how to obtain a version of Cppcheck for your platform.
+
+- Go to the `Cppcheck Configuration` section in the settings of your respective JetBrains IDE and put the **absolute** path to the Cppcheck executable in the `Cppcheck Path`.
+
+- (Windows) The executable is found in the path you specified during the installation. By default this should be `C:\Program Files\Cppcheck\cppcheck.exe`.
+- (Non-Windows) Use `which cppcheck` or `command -v cppcheck` on the command-line to get the location of the executable. The default depends on your system but should usually be `/usr/bin/cppcheck` or `/usr/local/bin/cppcheck`.
 
 ## Usage
 
-1. Install the [`cppcheck`](http://cppcheck.sourceforge.net/) tool using the instructions on its homepage. This plugin
-   does **not** bundle the `cppcheck` tool itself, which must be installed separately.
-2. Install the [cppcheck plugin][cppcheck_plugin] into CLion.
-3. Configure the plugin with the **absolute** path to the `cppcheck` executable into the `cppcheck path` option.
-    1. Windows
-        1. File | Settings | Cppcheck configuration
-        2. Usually the path is `C:\Program Files (x86)\Cppcheck\cppcheck.exe`
-    2. macOS: 
-        1. CLion | Preferences | Cppcheck configuration
-        2. In a terminal run `which cppcheck` to find the path to `cppcheck`. If you installed it with 
-           [Homebrew](https://brew.sh/), the path will be `/usr/local/bin/cppcheck`.
-    3. Linux
-        1. File | Settings | Cppcheck configuration
-        2. In a terminal run `which cppcheck` to find the path to `cppcheck`. If you installed it with your
-           system's package manager, it is probably located at `/usr/bin/cppcheck`. 
+### Provided Actions
 
-[cppcheck_plugin]: https://plugins.jetbrains.com/plugin/8143
+The plugin provides the `Show Cppcheck XML Output` action which will show the raw XML output of the latest finished analysis.
 
-## Known Issues
+## Known Issues/Limitations
 
-`cppcheck` is not designed to be run on header files (`.h`) directly, as must be done for this
+See https://github.com/johnthagen/clion-cppcheck/issues for a complete list of tracked issues and enhancements requests.
+
+### Analyzing header files
+
+Cppcheck is not designed to be run on header files (`.h`) directly, as must be done for this
 plugin, and as a result may have false positives.
 
-When run on header files directly, `cppcheck` defaults to C as the language, which will generate
-false positives for C++ projects.  C++ projects should append `--language=c++` to the
-`cppcheck` options.
+When run on header files directly, Cppcheck defaults to C as the language, which will generate
+false positives for C++ projects. So `--language=c++` is implicitly added as option when analyzing header files.
+
+It will also provide `unusedFunction` and `unusedStructMember` false positives so these findings are being suppressed.
+
+Related issues:<br/>
+https://github.com/johnthagen/clion-cppcheck/issues/22
+https://github.com/johnthagen/clion-cppcheck/issues/52
+
+### Analyzing multiple configurations
+
+By default Cppcheck tries to determine all the available configurations for a file (i.e. all combination of the used 
+preprocessor defines). As the plugin doesn't get the current list of defines this may lead to findings shown in code 
+which is shown as disabled in the editor. To check just a specific configuration you can either add defines using `-D`
+to the options. Or you can limit the configurations to a single one adding `--max-configs=1`.
+
+By default Limiting the configurations also decreases the time of the analysis.
+
+By default a maximum of 12 configurations is checked. This may lead to some code which might actually be active not to 
+show any findings. This can also be controlled by the `--max-configs=<n>` option.
+
+Related issues:<br/>
+https://github.com/johnthagen/clion-cppcheck/issues/34
+https://github.com/johnthagen/clion-cppcheck/issues/52
+
+### Multiple include paths
+
+No additional includes path are being passed to Cppcheck for the analysis which might result in false positives or not
+all findings being shown.
+
+You can add additional include path using the `-I <path>` options.
+
+Related issues:<br/>
+https://github.com/johnthagen/clion-cppcheck/issues/52
+https://github.com/johnthagen/clion-cppcheck/issues/55
+
+### Batch analysis
+
+The batch analysis passes the files individually to Cppcheck just like the highlighting inspections. So if you pass a 
+folder to the batch analysis it might not show the same findings as when passing a folder to `Cppcheck` itself.
+
+It will also pass all the contents of the folder to the analysis and not just project files. This might lead to
+unexpected findings.
+
+Also some findings in headers files triggered by the analysis of a source files are not being shown.
+
+Related issues:<br/>
+https://github.com/johnthagen/clion-cppcheck/issues/54
+
+### Showing raw output
+
+`Show Cppcheck XML Output` only shows the XML result of the latest analysis. If you need to view the results for a
+specific file make sure it was the last one analyzed.
+
+Related issues:<br/>
+https://github.com/johnthagen/clion-cppcheck/issues/53
+
+### External libraries / System includes
+
+Cppcheck does not support analyzing of external library or system includes. It provides profiles for several external
+libraries which describe the contents and behavior of the includes which allows it to finding issues with usage of them
+in the code. To add such a profile to your analysis you need to specify it via the `--library=<name>` option. The
+available profile can be found in the `cfg` folder of your `Cppcheck` installation. 
+
+### Global options
+
+Currently the configured options are global and not per project.
+
+Related issues:<br/>
+https://github.com/johnthagen/clion-cppcheck/issues/52
 
 ## Development
 
@@ -112,7 +178,7 @@ Support Cppcheck >1.89. (Contribution by @SJ-Innovation)
 
 ### 1.2.0 - 2018-04-11
 
-Greatly improve plugin responsiveness to changes by using virtual files to interact with `cppcheck`.
+Greatly improve plugin responsiveness to changes by using virtual files to interact with Cppcheck.
 (Contribution by @fastasturtle)
 
 ### 1.1.0 - 2018-04-02
@@ -158,7 +224,7 @@ Fix execution on Linux.
 
 ### 1.0.1 - 2016-01-11
 
-Fix possible out of bounds line number when ``cppcheck`` gets out of sync with in-memory file.
+Fix possible out of bounds line number when Cppcheck gets out of sync with in-memory file.
 
 ### 1.0.0 - 2016-01-07
 
