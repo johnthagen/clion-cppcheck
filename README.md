@@ -131,6 +131,7 @@ Deployment.
 - Added `Show Cppcheck XML Output` action to show the latest XML output.
 - Report execution errors as global inspection errors.
 - Display `Cppcheck Path` configuration errors as global inspection errors instead of using a (hard to spot) status bar message.
+- Display global inspection error and omit the option if the configured `MISRA Addon JSON` does not exist.
 
 ### 1.6.2 - 2022-01-25
 

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 class CppcheckInspection extends LocalInspectionTool {
@@ -65,15 +66,23 @@ class CppcheckInspection extends LocalInspectionTool {
             return new ProblemDescriptor[]{problemDescriptor};
         }
 
+        final ArrayList<ProblemDescriptor> descriptors = new ArrayList<>();
+
         String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
         final String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
-            cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
+            final File cppcheckMisraPathFile = new File(cppcheckMisraPath);
+            if (!cppcheckMisraPathFile.exists()) {
+                final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Configured 'MISRA Addon JSON' in 'Cppcheck Configuration' does not exist: " + cppcheckMisraPathFile.getAbsolutePath());
+                descriptors.add(problemDescriptor);
+            }
+            else {
+                cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
+            }
         }
         cppcheckOptions = String.format("%s --xml", cppcheckOptions);
 
-        ProblemDescriptor[] descriptors;
         File tempFile = null;
         try {
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
@@ -87,20 +96,20 @@ class CppcheckInspection extends LocalInspectionTool {
 
             final List<ProblemDescriptor> descriptorsList = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
-            descriptors = descriptorsList.toArray(new ProblemDescriptor[0]);
+            descriptors.addAll(descriptorsList);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
             CppcheckNotification.send("execution failed for " + vFile.getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
             final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Cppcheck execution failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage().split("\n", 2)[0]);
-            descriptors = new ProblemDescriptor[]{problemDescriptor};
+            descriptors.add(problemDescriptor);
         } finally {
             if (tempFile != null) {
                 FileUtil.delete(tempFile);
             }
         }
 
-        return descriptors;
+        return descriptors.toArray(new ProblemDescriptor[0]);
     }
 
     @NotNull
