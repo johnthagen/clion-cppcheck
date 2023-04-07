@@ -11,7 +11,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.PsiFile;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +22,22 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 class CppcheckInspection extends LocalInspectionTool {
     final static Path LATEST_RESULT_FILE = Paths.get(FileUtil.getTempDirectory(), "clion-cppcheck-latest.xml");
+
+    private static ProblemDescriptor createProblemDescriptor(@NotNull final PsiFile file,
+                                                             @NotNull final InspectionManager manager,
+                                                             @NotNull final String msg) {
+        return manager.createProblemDescriptor(
+                file,
+                (TextRange)null,
+                msg,
+                ProblemHighlightType.GENERIC_ERROR,
+                true);
+    }
 
     @Nullable
     @Override
@@ -45,26 +56,39 @@ class CppcheckInspection extends LocalInspectionTool {
 
         final String cppcheckPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_PATH);
         if (cppcheckPath == null || cppcheckPath.isEmpty()) {
-            StatusBar.Info.set("[!] Error: Please set path of cppcheck in File->Settings->Cppcheck Configuration",
-                    file.getProject());
-            return ProblemDescriptor.EMPTY_ARRAY;
+            final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Please set 'Cppcheck Path' in 'Cppcheck Configuration'.");
+            return new ProblemDescriptor[]{problemDescriptor};
         }
+
+        final File cppcheckPathFile = new File(cppcheckPath);
+        if (!cppcheckPathFile.exists()) {
+            final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Configured 'Cppcheck Path' in 'Cppcheck Configuration' does not exist: " + cppcheckPathFile.getAbsolutePath());
+            return new ProblemDescriptor[]{problemDescriptor};
+        }
+
+        final ArrayList<ProblemDescriptor> descriptors = new ArrayList<>();
 
         String cppcheckOptions = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_OPTIONS);
 
         final String cppcheckMisraPath = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
         if (cppcheckMisraPath != null && !cppcheckMisraPath.isEmpty()) {
-            cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
+            final File cppcheckMisraPathFile = new File(cppcheckMisraPath);
+            if (!cppcheckMisraPathFile.exists()) {
+                final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Configured 'MISRA Addon JSON' in 'Cppcheck Configuration' does not exist: " + cppcheckMisraPathFile.getAbsolutePath());
+                descriptors.add(problemDescriptor);
+            }
+            else {
+                cppcheckOptions = String.format("%s --addon=%s", cppcheckOptions, cppcheckMisraPath);
+            }
         }
         cppcheckOptions = String.format("%s --xml", cppcheckOptions);
 
-        ProblemDescriptor[] descriptors;
         File tempFile = null;
         try {
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
-                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPath, prependIncludeDir(cppcheckOptions, vFile),
+                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPathFile, prependIncludeDir(cppcheckOptions, vFile),
                             tempFile, cppcheckMisraPath);
 
             // store the output of the latest analysis
@@ -72,25 +96,20 @@ class CppcheckInspection extends LocalInspectionTool {
 
             final List<ProblemDescriptor> descriptorsList = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
-            descriptors = descriptorsList.toArray(new ProblemDescriptor[0]);
+            descriptors.addAll(descriptorsList);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
             CppcheckNotification.send("execution failed for " + vFile.getCanonicalPath(),
                     ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                     NotificationType.ERROR);
-            final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                    file,
-                    (TextRange)null,
-                    "Cppcheck execution failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage().split("\n", 2)[0],
-                    ProblemHighlightType.GENERIC_ERROR,
-                    true);
-            descriptors = new ProblemDescriptor[]{problemDescriptor};
+            final ProblemDescriptor problemDescriptor = createProblemDescriptor(file, manager, "Cppcheck execution failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage().split("\n", 2)[0]);
+            descriptors.add(problemDescriptor);
         } finally {
             if (tempFile != null) {
                 FileUtil.delete(tempFile);
             }
         }
 
-        return descriptors;
+        return descriptors.toArray(new ProblemDescriptor[0]);
     }
 
     @NotNull
