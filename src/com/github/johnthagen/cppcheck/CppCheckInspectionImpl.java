@@ -169,30 +169,29 @@ class CppCheckInspectionImpl {
             final Node inconclusiveNode = attributes.getNamedItem("inconclusive");
             final boolean inconclusive = inconclusiveNode != null && inconclusiveNode.getNodeValue().equals("true");
 
-            Location location = null;
+            final ArrayList<Location> locations = new ArrayList<>();
 
             // look for the first "location" child name
             final NodeList children = error.getChildNodes();
             for (int j = 0; j < children.getLength(); ++j) {
                 final Node child = children.item(j);
                 if (child.getNodeName().equals("location")) {
-                    location = new Location(child);
-                    break;
+                    locations.add(new Location(child));
                 }
             }
 
             // ignore entries without location e.g. missingIncludeSystem
-            if (location == null) {
+            if (locations.isEmpty()) {
                 CppcheckNotification.send("no location for " + vFile.getCanonicalPath(),
                         id + " " + severity + " " + inconclusive + " " + errorMessage,
                         NotificationType.ERROR);
                 continue;
             }
 
-            final String fileName = location.file;
-            int lineNumber = location.line;
+            final String fileName = locations.get(0).file;
+            int lineNumber = locations.get(0).line;
             // TODO: use in ProblemDescriptor
-            final int column = location.column;
+            final int column = locations.get(0).column;
 
             if (verboseLevel >= 4) {
                 CppcheckNotification.send(id + " for " + vFile.getCanonicalPath(),
@@ -221,10 +220,29 @@ class CppCheckInspectionImpl {
             final int lineStartOffset = DocumentUtil.getFirstNonSpaceCharOffset(document, lineNumber);
             final int lineEndOffset = document.getLineEndOffset(lineNumber);
 
+            String details = "";
+            if (locations.size() > 1) {
+                final StringBuilder sb = new StringBuilder();
+                for (final Location l : locations) {
+                    if (l.info == null)
+                        continue;
+                    final String name;
+                    if (l.file.equals(sourceFileName)) {
+                        name = vFile.getName(); // replace temporary file name with actual name
+                    } else {
+                        name = l.file;
+                    }
+                    sb.append(String.format("\n%s:%d: note: %s", name, l.line, l.info));
+                }
+                if (sb.length() > 0) {
+                    details = "\n" + sb;
+                }
+            }
+
             final ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
                     psiFile,
                     TextRange.create(lineStartOffset, lineEndOffset),
-                    "Cppcheck: (" + severity + (inconclusive ? INCONCLUSIVE_TEXT : "") + ") " + id + ": " + errorMessage,
+                    "Cppcheck: (" + severity + (inconclusive ? INCONCLUSIVE_TEXT : "") + ") " + id + ": " + errorMessage + details,
                     severityToHighlightType(severity),
                     true);
             descriptors.add(problemDescriptor);
