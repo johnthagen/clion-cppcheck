@@ -62,6 +62,34 @@ class CppCheckInspectionImpl {
     private final int verboseLevel;
     private static final String INCONCLUSIVE_TEXT = ":inconclusive";
 
+    static class Location
+    {
+        Location(@NotNull final Node location) {
+            final NamedNodeMap locationAttributes = location.getAttributes();
+            file = new File(locationAttributes.getNamedItem("file").getNodeValue()).getName();
+            line = Integer.parseInt(locationAttributes.getNamedItem("line").getNodeValue());
+            final Node columnAttr = locationAttributes.getNamedItem("column");
+            // the "column" attribute was added in Cppcheck 1.89
+            if (columnAttr != null) {
+                column = Integer.parseInt(columnAttr.getNodeValue());
+            }
+            else {
+                column = -1;
+            }
+            final Node infoAttr = locationAttributes.getNamedItem("info");
+            if (infoAttr != null) {
+                info = infoAttr.getNodeValue();
+            } else {
+                info = null;
+            }
+        }
+
+        final String file;
+        final int line;
+        final int column;
+        final String info;
+    }
+
     @NotNull
     public List<ProblemDescriptor> parseOutput(@NotNull final PsiFile psiFile,
                                                @NotNull final InspectionManager manager,
@@ -141,14 +169,14 @@ class CppCheckInspectionImpl {
             final Node inconclusiveNode = attributes.getNamedItem("inconclusive");
             final boolean inconclusive = inconclusiveNode != null && inconclusiveNode.getNodeValue().equals("true");
 
-            Node location = null;
+            Location location = null;
 
             // look for the first "location" child name
             final NodeList children = error.getChildNodes();
             for (int j = 0; j < children.getLength(); ++j) {
                 final Node child = children.item(j);
                 if (child.getNodeName().equals("location")) {
-                    location = child;
+                    location = new Location(child);
                     break;
                 }
             }
@@ -161,16 +189,10 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
-            final NamedNodeMap locationAttributes = location.getAttributes();
-            final String fileName = new File(locationAttributes.getNamedItem("file").getNodeValue()).getName();
-            int lineNumber = Integer.parseInt(locationAttributes.getNamedItem("line").getNodeValue());
-            final Node columnAttr = locationAttributes.getNamedItem("column");
+            final String fileName = location.file;
+            int lineNumber = location.line;
             // TODO: use in ProblemDescriptor
-            int column = -1;
-            // the "column" attribute was added in Cppcheck 1.89
-            if (columnAttr != null) {
-                column = Integer.parseInt(columnAttr.getNodeValue());
-            }
+            final int column = location.column;
 
             if (verboseLevel >= 4) {
                 CppcheckNotification.send(id + " for " + vFile.getCanonicalPath(),
