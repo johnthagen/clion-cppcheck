@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -14,6 +16,8 @@ class Configuration implements Configurable {
     private JFilePicker cppcheckFilePicker;
     private JTextField cppcheckOptionsField;
     private JFilePicker cppcheckMisraFilePicker;
+    private final String[] VERBOSE_LEVEL_SPINNER_MODEL = {"0", "1", "2", "3", "4"};
+    private JSpinner cppcheckVerboseLevel;
     private static final String CPPCHECK_NOTE =
             "Note: C++ projects should leave --language=c++ appended to the Cppcheck options to avoid some " +
                     "false positives in header files due to the fact that Cppcheck implicitly defaults to " +
@@ -33,6 +37,7 @@ class Configuration implements Configurable {
 
     static final String CONFIGURATION_KEY_CPPCHECK_PATH = "cppcheck";
     static final String CONFIGURATION_KEY_CPPCHECK_OPTIONS = "cppcheckOptions";
+    static final String CONFIGURATION_KEY_CPPCHECK_VERBOSE_LEVEL = "cppcheckVerboseLevel";
     static final String CONFIGURATION_KEY_CPPCHECK_MISRA_PATH = "cppcheckMisraPath";
 
     private static final String defaultOptions = "--enable=warning,performance,portability,style --language=c++";
@@ -52,20 +57,27 @@ class Configuration implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        final JPanel jPanel = new JPanel();
-
-        final VerticalLayout verticalLayout = new VerticalLayout(1, 2);
-        jPanel.setLayout(verticalLayout);
-
         cppcheckFilePicker = new JFilePicker("Cppcheck Path:", "...");
         final JLabel optionFieldLabel = new JLabel("Cppcheck Options (Default: " + defaultOptions + "):");
         cppcheckOptionsField = new JTextField(defaultOptions, 38);
         cppcheckMisraFilePicker = new JFilePicker("MISRA Addon JSON:", "...");
+        final JLabel verboseLevelLabel = new JLabel("Plugin Verbose Level:");
+        cppcheckVerboseLevel = new JSpinner(new SpinnerListModel(VERBOSE_LEVEL_SPINNER_MODEL));
 
         // The first time a user installs the plugin, save the default options in their properties.
         if (Properties.get(CONFIGURATION_KEY_CPPCHECK_OPTIONS) == null ||
                 Properties.get(CONFIGURATION_KEY_CPPCHECK_OPTIONS).isEmpty()) {
             Properties.set(CONFIGURATION_KEY_CPPCHECK_OPTIONS, cppcheckOptionsField.getText());
+        }
+
+        if (Properties.get(CONFIGURATION_KEY_CPPCHECK_VERBOSE_LEVEL) == null) {
+            cppcheckVerboseLevel.setValue("0");
+            Properties.set(CONFIGURATION_KEY_CPPCHECK_VERBOSE_LEVEL, cppcheckVerboseLevel.getValue().toString());
+        }
+
+        if (Properties.get(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH) == null) {
+            cppcheckMisraFilePicker.getTextField().setText("");
+            Properties.set(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH, cppcheckMisraFilePicker.getTextField().getText());
         }
 
         if (Properties.get(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH) == null) {
@@ -86,6 +98,12 @@ class Configuration implements Configurable {
         cppcheckFilePicker.getTextField().getDocument().addDocumentListener(listener);
         cppcheckOptionsField.getDocument().addDocumentListener(listener);
         cppcheckMisraFilePicker.getTextField().getDocument().addDocumentListener(listener);
+        cppcheckVerboseLevel.addChangeListener(listener);
+
+        final JPanel jPanel = new JPanel();
+
+        final VerticalLayout verticalLayout = new VerticalLayout(1, 2);
+        jPanel.setLayout(verticalLayout);
 
         jPanel.add(cppcheckFilePicker);
         jPanel.add(optionFieldLabel);
@@ -94,6 +112,13 @@ class Configuration implements Configurable {
 
         jPanel.add(cppcheckMisraFilePicker);
         jPanel.add(cppcheckMisraNoteArea);
+
+        final JPanel spinnerPanel = new JPanel();
+        spinnerPanel.setLayout(new BoxLayout(spinnerPanel, BoxLayout.X_AXIS));
+        spinnerPanel.add(verboseLevelLabel);
+        spinnerPanel.add(cppcheckVerboseLevel);
+        jPanel.add(spinnerPanel);
+
         return jPanel;
     }
 
@@ -110,6 +135,7 @@ class Configuration implements Configurable {
     public void apply() {
         Properties.set(CONFIGURATION_KEY_CPPCHECK_PATH, cppcheckFilePicker.getTextField().getText());
         Properties.set(CONFIGURATION_KEY_CPPCHECK_OPTIONS, cppcheckOptionsField.getText());
+        Properties.set(CONFIGURATION_KEY_CPPCHECK_VERBOSE_LEVEL, cppcheckVerboseLevel.getValue().toString());
         Properties.set(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH, cppcheckMisraFilePicker.getTextField().getText());
         modified = false;
     }
@@ -122,6 +148,9 @@ class Configuration implements Configurable {
         final String cppcheckOptions = Properties.get(CONFIGURATION_KEY_CPPCHECK_OPTIONS);
         cppcheckOptionsField.setText(cppcheckOptions);
 
+        final String cppcheckVerbose = Properties.get(CONFIGURATION_KEY_CPPCHECK_VERBOSE_LEVEL);
+        cppcheckVerboseLevel.setValue(cppcheckVerbose);
+
         final String cppcheckMisraPath = Properties.get(CONFIGURATION_KEY_CPPCHECK_MISRA_PATH);
         cppcheckMisraFilePicker.getTextField().setText(cppcheckMisraPath);
 
@@ -132,10 +161,11 @@ class Configuration implements Configurable {
     public void disposeUIResources() {
         cppcheckFilePicker.getTextField().getDocument().removeDocumentListener(listener);
         cppcheckOptionsField.getDocument().removeDocumentListener(listener);
+        cppcheckVerboseLevel.removeChangeListener(listener);
         cppcheckMisraFilePicker.getTextField().getDocument().removeDocumentListener(listener);
     }
 
-    private static class CppcheckConfigurationModifiedListener implements DocumentListener {
+    private static class CppcheckConfigurationModifiedListener implements DocumentListener, ChangeListener {
         private final Configuration option;
 
         CppcheckConfigurationModifiedListener(final Configuration option) {
@@ -156,5 +186,8 @@ class Configuration implements Configurable {
         public void changedUpdate(final DocumentEvent documentEvent) {
             option.setModified();
         }
+
+        @Override
+        public void stateChanged(final ChangeEvent e) { option.setModified(); }
     }
 }

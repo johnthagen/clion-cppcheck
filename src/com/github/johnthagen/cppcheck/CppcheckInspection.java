@@ -83,18 +83,25 @@ class CppcheckInspection extends LocalInspectionTool {
         }
         cppcheckOptions = String.format("%s --xml", cppcheckOptions);
 
+        int verboseLevel = 0;
+        final String cppcheckVerboseLevel = Properties.get(Configuration.CONFIGURATION_KEY_CPPCHECK_VERBOSE_LEVEL);
+        if (cppcheckVerboseLevel != null && !cppcheckVerboseLevel.isEmpty()) {
+            verboseLevel = Integer.parseInt(cppcheckVerboseLevel);
+        }
+
         File tempFile = null;
         try {
+            final CppCheckInspectionImpl inspectionImpl = new CppCheckInspectionImpl(verboseLevel);
             tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
-                    CppCheckInspectionImpl.executeCommandOnFile(vFile, cppcheckPathFile, prependIncludeDir(cppcheckOptions, vFile),
+                    inspectionImpl.executeCommandOnFile(vFile, cppcheckPathFile, prependIncludeDir(cppcheckOptions, vFile),
                             tempFile, cppcheckMisraPath);
 
             // store the output of the latest analysis
             FileUtil.writeToFile(LATEST_RESULT_FILE.toFile(), cppcheckOutput);
 
-            final List<ProblemDescriptor> descriptorsList = CppCheckInspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
+            final List<ProblemDescriptor> descriptorsList = inspectionImpl.parseOutput(file, manager, document, cppcheckOutput,
                     tempFile.getName());
             descriptors.addAll(descriptorsList);
         } catch (final ExecutionException | CppcheckError | IOException | SAXException | ParserConfigurationException ex) {
