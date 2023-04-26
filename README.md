@@ -145,6 +145,7 @@ Deployment.
 - Display global inspection error and omit the option if the configured `MISRA Addon JSON` does not exist.
 - Made plugin verbose level configurable via settings.
 - Display all available details for findings in tooltip.
+- Apply the provided column information to the highlighting.
 
 ### 1.6.2 - 2022-01-25
 
