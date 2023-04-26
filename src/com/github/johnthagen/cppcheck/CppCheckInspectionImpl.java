@@ -190,7 +190,6 @@ class CppCheckInspectionImpl {
 
             final String fileName = locations.get(0).file;
             int lineNumber = locations.get(0).line;
-            // TODO: use in ProblemDescriptor
             final int column = locations.get(0).column;
 
             if (verboseLevel >= 4) {
@@ -214,10 +213,10 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
-            // Document counts lines starting at 0, rather than 1 like in cppcheck.
+            // Document counts lines and columns starting at 0, rather than 1 like in cppcheck.
             lineNumber -= 1;
 
-            final int lineStartOffset = DocumentUtil.getFirstNonSpaceCharOffset(document, lineNumber);
+            final int lineStartOffset = (column == -1) ? DocumentUtil.getFirstNonSpaceCharOffset(document, lineNumber) : (document.getLineStartOffset(lineNumber) + (column -1));
             final int lineEndOffset = document.getLineEndOffset(lineNumber);
 
             String details = "";
