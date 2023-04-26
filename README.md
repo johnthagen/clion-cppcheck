@@ -144,6 +144,7 @@ Deployment.
 - Display `Cppcheck Path` configuration errors as global inspection errors instead of using a (hard to spot) status bar message.
 - Display global inspection error and omit the option if the configured `MISRA Addon JSON` does not exist.
 - Made plugin verbose level configurable via settings.
+- Display all available details for findings in tooltip.
 
 ### 1.6.2 - 2022-01-25
 
