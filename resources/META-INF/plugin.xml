@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.6.3</version>
+  <version>1.6.4</version>
   <vendor email="johnthagen@users.noreply.github.com" url="https://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -23,12 +23,6 @@
     ]]></description>
 
   <change-notes><![CDATA[
-    - Added `Show Cppcheck XML Output` action to show the latest XML output.<br/>
-    - Report execution errors as global inspection errors.<br/>
-    - Display `Cppcheck Path` configuration errors as global inspection errors instead of using a (hard to spot) status bar message.<br/>
-    - Display global inspection error and omit the option if the configured `MISRA Addon JSON` does not exist.<br/>
-    - Made plugin verbose level configurable via settings.<br/>
-    - Display all available details for findings in tooltip.
     ]]>
   </change-notes>
 
