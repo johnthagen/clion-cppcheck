@@ -2,7 +2,7 @@
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
   <version>1.6.3</version>
-  <vendor email="johnthagen@gmail.com" url="http://github.com/johnthagen">johnthagen</vendor>
+  <vendor email="johnthagen@users.noreply.github.com" url="https://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
       A plugin for JetBrains IDEs to provide inspections for C/C++ files utilizing the static analyzer Cppcheck.<br/><br/>
@@ -16,10 +16,10 @@
       <br/>
 
       <b>Usage:</b><br/>
-        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#known-issues">Installation</a>.<br/>
+        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#installation">Installation</a>.<br/>
 
       <b>Known issues:</b><br/>
-        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#known-issues">Known Issues</a>.<br/>
+        Please refer to <a href="https://github.com/johnthagen/clion-cppcheck#known-issueslimitations">Known Issues</a>.<br/>
     ]]></description>
 
   <change-notes><![CDATA[
@@ -32,10 +32,10 @@
     ]]>
   </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
   <idea-version since-build="163.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+  <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
        on how to target different products -->
   <!-- enable plugin in all products -->
   <depends>com.intellij.modules.lang</depends>
