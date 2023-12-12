@@ -137,7 +137,7 @@ Deployment.
 
 ## Releases
 
-### 1.6.4 - 20XX-XX-XX
+### 1.6.4 - 2023-12-12
 
 - Added missing `com.intellij.modules.java` dependency.
 

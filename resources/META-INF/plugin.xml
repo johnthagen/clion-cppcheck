@@ -23,6 +23,8 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    Note: 1.6.3 had not been published because of a compatibility issue. Please refer to the changes of that version to see what has actually changed.
+
     - Added missing `com.intellij.modules.java` dependency.
     ]]>
   </change-notes>
