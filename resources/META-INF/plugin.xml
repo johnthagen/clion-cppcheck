@@ -23,6 +23,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    - Added missing `com.intellij.modules.java` dependency.
     ]]>
   </change-notes>
 
@@ -33,6 +34,7 @@
        on how to target different products -->
   <!-- enable plugin in all products -->
   <depends>com.intellij.modules.lang</depends>
+  <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <localInspection implementationClass="com.github.johnthagen.cppcheck.CppcheckInspection"
