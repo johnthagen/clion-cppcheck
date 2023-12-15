@@ -23,17 +23,20 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    Note: 1.6.4 had not been available for all products due to a compatibility issue. Please refer to the changes of the prior versions to see what has actually changed.<br/>
+    <br/>
+    - Removed "com.intellij.modules.java" dependency.<br/>
+    - Bumped the oldest supported product versions to 2020.1.
     ]]>
   </change-notes>
 
   <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
-  <idea-version since-build="163.0"/>
+  <idea-version since-build="201"/>
 
   <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
        on how to target different products -->
   <!-- enable plugin in all products -->
   <depends>com.intellij.modules.lang</depends>
-  <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <localInspection implementationClass="com.github.johnthagen.cppcheck.CppcheckInspection"
