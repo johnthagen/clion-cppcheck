@@ -137,6 +137,8 @@ Deployment.
 
 ## Releases
 
+### 1.6.6 - 20XX-XX-XX
+
 ### 1.6.5 - 2023-12-15
 
 - Removed `com.intellij.modules.java` dependency.

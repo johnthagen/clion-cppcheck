@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.johnthagen.cppcheck</id>
   <name>cppcheck</name>
-  <version>1.6.5</version>
+  <version>1.6.6</version>
   <vendor email="johnthagen@users.noreply.github.com" url="https://github.com/johnthagen">johnthagen</vendor>
 
   <description><![CDATA[
@@ -23,10 +23,6 @@
     ]]></description>
 
   <change-notes><![CDATA[
-    Note: 1.6.4 had not been available for all products due to a compatibility issue. Please refer to the changes of the prior versions to see what has actually changed.<br/>
-    <br/>
-    - Removed "com.intellij.modules.java" dependency.<br/>
-    - Bumped the oldest supported product versions to 2020.1.
     ]]>
   </change-notes>
 
