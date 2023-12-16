@@ -137,7 +137,12 @@ Deployment.
 
 ## Releases
 
-### 1.6.5 - 20XX-XX-XX
+### 1.6.6 - 20XX-XX-XX
+
+### 1.6.5 - 2023-12-15
+
+- Removed `com.intellij.modules.java` dependency.
+- Bumped the oldest supported product versions to 2020.1.
 
 ### 1.6.4 - 2023-12-12
 
