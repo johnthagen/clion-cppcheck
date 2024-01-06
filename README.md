@@ -139,6 +139,8 @@ Deployment.
 
 ### 1.6.6 - 20XX-XX-XX
 
+- Fixed `no location` error notifications for `checkersReport` when `information` is enabled.
+
 ### 1.6.5 - 2023-12-15
 
 - Removed `com.intellij.modules.java` dependency.

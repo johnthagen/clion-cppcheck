@@ -23,6 +23,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    - Fixed `no location` error notifications for `checkersReport` when `information` is enabled.
     ]]>
   </change-notes>
 
