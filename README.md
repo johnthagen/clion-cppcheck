@@ -144,6 +144,7 @@ Deployment.
 ## Releases
 
 ### 1.6.7 - 20XX-XX-XX
+- Mitigated build warning about `RandomStringUtils.randomAlphanumeric(int)` being deprecated.
 
 ### 1.6.6 - 2024-01-06
 

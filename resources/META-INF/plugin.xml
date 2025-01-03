@@ -23,6 +23,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    - Mitigated build warning about `RandomStringUtils.randomAlphanumeric(int)` being deprecated.
     ]]>
   </change-notes>
 

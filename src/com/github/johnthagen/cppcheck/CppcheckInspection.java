@@ -92,7 +92,7 @@ class CppcheckInspection extends LocalInspectionTool {
         File tempFile = null;
         try {
             final CppCheckInspectionImpl inspectionImpl = new CppCheckInspectionImpl(verboseLevel);
-            tempFile = FileUtil.createTempFile(RandomStringUtils.randomAlphanumeric(8) + "_", vFile.getName(), true);
+            tempFile = FileUtil.createTempFile(RandomStringUtils.insecure().nextAlphanumeric(8) + "_", vFile.getName(), true);
             FileUtil.writeToFile(tempFile, document.getText());
             final String cppcheckOutput =
                     inspectionImpl.executeCommandOnFile(vFile, cppcheckPathFile, prependIncludeDir(cppcheckOptions, vFile),
