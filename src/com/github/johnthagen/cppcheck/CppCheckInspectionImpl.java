@@ -159,6 +159,14 @@ class CppCheckInspectionImpl {
                 continue;
             }
 
+            // Generated since 2.13.0 when "information" is enabled.
+            /*
+                <error id="checkersReport" severity="information" msg="Active checkers: 59/592 (use --checkers-report=&lt;filename&gt; to see details)" verbose="Active checkers: 59/592 (use --checkers-report=&lt;filename&gt; to see details)"/>
+             */
+            if (id.equals("checkersReport")) {
+                continue;
+            }
+
             // suppress this warning for headers until Cppcheck handles them in a better way
             if (SupportedExtensions.isHeaderFile(vFile) && id.equals("unusedStructMember")) {
                 continue;

@@ -137,7 +137,11 @@ Deployment.
 
 ## Releases
 
-### 1.6.6 - 20XX-XX-XX
+### 1.6.7 - 20XX-XX-XX
+
+### 1.6.6 - 2024-01-06
+
+- Fixed `no location` error notifications for `checkersReport` when `information` is enabled.
 
 ### 1.6.5 - 2023-12-15
 
