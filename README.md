@@ -1,7 +1,5 @@
 # clion-cppcheck
 
-<iframe width="245px" height="48px" src="https://plugins.jetbrains.com/embeddable/install/8143"></iframe>
-
 A plugin for JetBrains IDEs to provide inspections for C/C++ files utilizing the static analyzer [Cppcheck](https://cppcheck.sourceforge.io/). 
 
 This project is supported with a free open source license of CLion from 
